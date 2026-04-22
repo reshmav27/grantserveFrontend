@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { UserResponseDto } from '../../model/login.model';
-import { LoginService } from '../../services/login.service';
-import { Route } from '@angular/router';
+import { UserResponseDto } from '../model/login.model';
+import { LoginService } from '../../../core/services/login.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -15,8 +15,10 @@ export class Login {
 
   isPasswordVisible: boolean = false;
 
+
   constructor(
     private LoginService: LoginService, 
+    private router: Router
   ) {}
 
 
@@ -28,12 +30,7 @@ export class Login {
         localStorage.setItem('token', response.token);
         localStorage.setItem('userRole', response.role);
         console.log(response.message);
-        // 2. Navigate based on role
-        // if (response.role === 'MANAGER') {
-        //   this.router.navigate(['/manager-dashboard']);
-        // } else {
-        //   this.router.navigate(['/home']);
-        // }
+        this.router.navigate(['/home']);
       }
     },
     error: (err) => {
