@@ -1,0 +1,128 @@
+/* 1. Component Host Configuration */
+:host {
+  display: block;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 2. Page Wrapper */
+.login-wrapper {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at top left, #eef2ff, #ffffff, #e0f2fe);
+  overflow: hidden; /* Safety lock for scrollers */
+}
+
+/* 3. Compact Login Card */
+.login-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px); /* Subtle glass effect */
+  padding: 32px; /* Tightened padding */
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+  width: 90%;
+  max-width: 380px; /* Smaller, more centered appearance */
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* 4. Typography Adjustments */
+h1 { 
+  font-size: 26px; /* Balanced size */
+  font-weight: 700;
+  margin-bottom: 8px; 
+  color: #0f172a; 
+  letter-spacing: -0.02em;
+}
+
+.subtitle { 
+  color: #64748b; 
+  margin-bottom: 28px; 
+  font-size: 14.5px; /* Clean readability */
+}
+
+/* 5. Input Styling */
+.input-group { 
+  text-align: left; 
+  margin-bottom: 18px; 
+}
+
+label { 
+  display: block; 
+  font-size: 13.5px; /* Sharp and modern */
+  margin-bottom: 8px; 
+  font-weight: 500; 
+  color: #1e293b; 
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  padding: 0 14px;
+  transition: all 0.2s ease;
+}
+
+.input-wrapper:focus-within {
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.input-wrapper input {
+  border: none;
+  background: transparent;
+  padding: 12px 10px; /* Reduced vertical bulk */
+  width: 100%;
+  outline: none;
+  color: #1e293b;
+  font-size: 15px;
+  font-family: inherit;
+}
+
+/* 6. Icons & Buttons */
+.material-symbols-outlined { 
+  color: #94a3b8; 
+  font-size: 20px; 
+}
+
+.continue-btn {
+  width: 100%;
+  padding: 13px; 
+  background: #0f172a;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15.5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: transform 0.1s active;
+}
+
+.continue-btn:active {
+  transform: scale(0.98);
+}
+
+/* 7. Footer text */
+.terms { 
+  font-size: 12px; 
+  color: #94a3b8; 
+  margin-top: 24px; 
+}
+
+.terms span { 
+  text-decoration: underline; 
+  cursor: pointer; 
+  color: #475569;
+  font-weight: 500;
+}
