@@ -5,3 +5,11 @@ html, body {
   width: 100%;
   overflow: hidden; /* This kills the scroller for good */
 }
+.main-content {
+
+  transition: margin-left 0.3s ease; 
+}
+
+.main-content.sidebar-collapsed {
+  margin-left: 100px;
+}

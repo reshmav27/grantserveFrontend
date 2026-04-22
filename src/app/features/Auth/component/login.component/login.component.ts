@@ -1,25 +1,23 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { UserResponseDto } from '../model/login.model';
-import { LoginService } from '../../../core/services/login.service';
-import { Router } from '@angular/router';
+import { UserResponseDto } from '../../model/login.model';
+import { LoginService } from '../../../../core/services/login/login.service';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
 export class Login {
   loginData = { email: '', password: '' };
-
   isPasswordVisible: boolean = false;
-
-
   constructor(
     private LoginService: LoginService, 
     private router: Router
   ) {}
+
 
 
  onLogin() {
@@ -31,6 +29,7 @@ export class Login {
         localStorage.setItem('userRole', response.role);
         console.log(response.message);
         this.router.navigate(['/home']);
+        
       }
     },
     error: (err) => {
