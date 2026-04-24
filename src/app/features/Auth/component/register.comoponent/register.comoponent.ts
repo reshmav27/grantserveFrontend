@@ -32,7 +32,8 @@ export class RegisterComoponent {
         next: (res: any) => {
           this.isError = false;
           this.registerMessage = res.message;
-          setTimeout(() => this.router.navigate(['/login']), 2500);
+          
+          setTimeout(() => this.router.navigate(['/']), 2500);
         },
         error: (err: any) => {
           this.isError = true;

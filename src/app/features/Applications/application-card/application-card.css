@@ -1,0 +1,124 @@
+/* Card Container Styles */
+:host {
+  display: block;
+  transition: all 0.3s ease;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Header Section */
+.card-header {
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8fafc;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.app-id {
+  font-weight: 700;
+  color: #64748b;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+/* Body Section */
+.card-body {
+  padding: 1.5rem 1.25rem;
+  flex-grow: 1;
+}
+
+.app-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.4;
+}
+
+.program-info {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Footer Section */
+.card-footer {
+  padding: 1rem 1.25rem;
+  background-color: #ffffff;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.date-info {
+  font-size: 0.75rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Status Badge Logic - Fixing the "Invisible" issue */
+.badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  border: none !important;
+}
+
+.status-submitted {
+  background-color: #e0f2fe !important;
+  color: #0369a1 !important;
+}
+
+.status-under-review {
+  background-color: #fef3c7 !important;
+  color: #92400e !important;
+}
+
+.status-accepted {
+  background-color: #dcfce7 !important;
+  color: #166534 !important;
+}
+
+.status-rejected {
+  background-color: #fee2e2 !important;
+  color: #991b1b !important;
+}
+
+/* Action Button */
+.btn-view {
+  background: transparent;
+  color: #2563eb;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.btn-view:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}

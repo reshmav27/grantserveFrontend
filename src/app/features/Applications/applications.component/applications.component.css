@@ -1,0 +1,56 @@
+:host {
+  display: block;
+  background-color: #f8f9fa; /* Light grey background like the screenshot */
+  min-height: 100vh;
+}
+
+.btn-primary {
+  background-color: #2563eb; /* Closer to the royal blue in the image */
+  border-color: #2563eb;
+}
+
+.badge {
+  color: #64748b !important;
+  vertical-align: middle;
+}
+
+.form-control:focus {
+  border-color: #dee2e6;
+}
+.empty-state-central {
+  /* This ensures it takes up most of the screen height under the filters */
+  min-height: 65vh; 
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* Remove any card-like borders or backgrounds */
+  background: transparent; 
+}
+
+.icon-circle {
+  width: 140px;
+  height: 140px;
+  background-color: rgba(0, 0, 0, 0.02); /* Very faint circle */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.max-w-md {
+  max-width: 450px;
+  line-height: 1.6;
+}
+
+/* Optional: Subtle animation so it doesn't just 'pop' in */
+.empty-state-central {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
