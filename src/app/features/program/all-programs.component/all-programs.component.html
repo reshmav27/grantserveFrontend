@@ -1,0 +1,57 @@
+<app-header [showSubHeader]="true" [isDashboard]="false" [title]="displayTitle"></app-header>
+
+<div class="container mt-4">
+    <section class="mb-5">
+        <div class="container">
+            
+            @if (isLoading) {
+                <div class="d-flex flex-column align-items-center justify-content-center my-5 py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            } 
+            
+            @else {
+                @if (filteredPrograms && filteredPrograms.length > 0) {
+                    <div class="row g-4">
+                        @for (item of filteredPrograms; track item.prog?.programID || item.programID; let i = $index) {
+                            <div [class.col-md-6]="isDraftView" [class.col-12]="!isDraftView">
+                                <app-program-card [data]="item" [index]="i" [isDraft]="isDraftView"></app-program-card>
+                            </div>
+                        }
+                    </div>
+
+                    <nav class="d-flex justify-content-between align-items-center mt-5">
+                        <span class="text-muted small">
+                            Showing {{currentPage * pageSize + 1}} - {{ (currentPage + 1) * pageSize > totalElements ? totalElements : (currentPage + 1) * pageSize }} of {{totalElements}}
+                        </span>
+                        
+                        <ul class="pagination mb-0">
+                            <li class="page-item" [class.disabled]="currentPage === 0">
+                                <button class="page-link" (click)="changePage(currentPage - 1)">Previous</button>
+                            </li>
+                            
+                            <li class="page-item active">
+                                <span class="page-link">{{ currentPage + 1 }} / {{ totalPages }}</span>
+                            </li>
+
+                            <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+                                <button class="page-link" (click)="changePage(currentPage + 1)">Next</button>
+                            </li>
+                        </ul>
+                    </nav>
+                } 
+                
+                @else {
+                    <div class="text-center my-5 py-5 border rounded bg-light">
+                        <h4 class="text-secondary">No Programs Found</h4>
+                        <p class="text-muted">Try adjusting your filters or creating a new program.</p>
+                    </div>
+                }
+            }
+        </div>
+    </section>
+</div>
+
+<app-scroll-to-top></app-scroll-to-top>

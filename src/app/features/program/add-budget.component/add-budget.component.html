@@ -1,0 +1,47 @@
+<app-header [showSubHeader]="false"></app-header>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow-sm border-0 p-4 p-md-5">
+                <h2 class="fw-bold mb-1">Set Program Budget</h2>
+                <p class="text-muted mb-4">Allocate funds and select a simulated payment source for this program.</p>
+
+                <form [formGroup]="budgetForm" (ngSubmit)="handleSubmit()">
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Total Allocated Amount (INR)</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-white border-end-0">₹</span>
+                            <input type="number" formControlName="allocatedAmount" class="form-control border-start-0"
+                                placeholder="0.00">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Simulated Payment Source</label>
+                        <select formControlName="paymentMethod" class="form-select form-select-lg"
+                            (change)="handlePaymentSelection(budgetForm.get('paymentMethod')?.value)">
+                            <option value="" disabled selected>Select method...</option>
+                            <option value="bank">Direct Bank Transfer</option>
+                            <option value="credit">Credit Card (Visa/Mastercard)</option>
+                            <option value="wire">International Wire Transfer</option>
+                            <option value="internal">Internal Organization Ledger</option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex justify-content-between border-top pt-4 mt-5">
+                        <button type="button" class="btn btn-outline-secondary px-4" (click)="cancel()"
+                            [disabled]="isSubmitting">
+                            Back to Details
+                            <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1"></span>
+                        </button>
+                        <button type="submit" class="btn btn-success px-5 fw-bold shadow-sm" [disabled]="isSubmitting">
+                            Confirm & Publish Program
+                            <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

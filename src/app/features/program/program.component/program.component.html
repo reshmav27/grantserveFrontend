@@ -1,0 +1,49 @@
+<app-header [showSubHeader]="true" [isDashboard]="true"></app-header>
+
+<div class="container mt-4">
+  @if (isLoading) {
+    <div class="text-center my-5">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p>Loading Dashboard...</p>
+    </div>
+  } @else {
+    <section class="mb-5">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center mt-4">
+          <h5 class="fw-bold text-secondary">Your Drafts</h5>
+          <a [routerLink]="['/programs/view-all', 'draft']"
+            class="btn btn-sm btn-link text-primary fw-bold text-decoration-none">View All<i class="bi bi-chevron-right ms-1" style="font-size: 1.2rem;"></i></a>
+        </div>
+        <div class="row g-4">
+          <div class="col-md-6" *ngFor="let draft of draftPrograms | slice:0:4; let i = index">
+            <app-program-card [data]="draft" [index]="i" [isDraft]="true"></app-program-card>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-4">
+          <h5 class="fw-bold text-secondary">Active & Published Programs</h5>
+          <a [routerLink]="['/programs/view-all', 'active']"
+            class="btn btn-sm btn-link text-primary fw-bold text-decoration-none">View All<i class="bi bi-chevron-right ms-1" style="font-size: 1.2rem;"></i></a>
+        </div>
+        <div *ngFor="let program of activePrograms | slice:0:4; let i = index">
+          <app-program-card [data]="program" [index]="i"></app-program-card>
+        </div>
+      </div>
+    </section>
+  }
+</div>
+
+<!-- <div class="btn-floating">
+  <button class="btn btn-primary rounded-circle shadow-lg p-3" title="New Program" routerLink="/programs/create">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 16 16">
+          <path
+              d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+      </svg>
+  </button>
+  <button (click)="scrollToTop()" class="btn btn-light border rounded-circle shadow-sm p-3" title="Go to Top">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z" />
+    </svg>
+  </button>
+</div> -->
+<app-scroll-to-top></app-scroll-to-top>
