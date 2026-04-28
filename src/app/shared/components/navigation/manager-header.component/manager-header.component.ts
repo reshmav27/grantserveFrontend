@@ -1,15 +1,15 @@
-import { Component, Input } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
+import { Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-header',
+  selector: 'app-manager-header',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.css',
+  templateUrl: './manager-header.component.html',
+  styleUrl: './manager-header.component.css',
 })
-export class HeaderComponent {
+export class ManagerHeaderComponent {
   @Input() showSubHeader: boolean = true;
   @Input() isDashboard: boolean = false;
   @Input() title: string = 'All Programs';

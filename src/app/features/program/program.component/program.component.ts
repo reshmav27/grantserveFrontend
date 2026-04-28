@@ -8,16 +8,16 @@ import { forkJoin, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ProgramCardComponent } from '../program-card.component/program-card.component';
 import { ProgramAnalytics } from '../model/program.model';
-import { HeaderComponent } from '../header.component/header.component';
+import { ManagerHeaderComponent } from '../../../shared/components/navigation/manager-header.component/manager-header.component';
 import { RouterLink } from '@angular/router';
 import { ScrollToTopComponent } from '../scroll-to-top.component/scroll-to-top.component';
 
 @Component({
   selector: 'app-program',
+  imports: [CommonModule, FormsModule, ProgramCardComponent, ManagerHeaderComponent, RouterLink, ScrollToTopComponent],
   templateUrl: './program.component.html',
   styleUrls: ['./program.component.css'],
-  standalone: true,
-  imports: [CommonModule, FormsModule, ProgramCardComponent, HeaderComponent, RouterLink, ScrollToTopComponent]
+  standalone: true
 })
 export class ProgramComponent implements OnInit {
   activePrograms: any[] = []; 

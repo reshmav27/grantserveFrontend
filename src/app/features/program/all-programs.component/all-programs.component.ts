@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ProgramService } from '../service/program.service';
 import { ProgramDataService } from '../service/program-data.service';
-import { HeaderComponent } from '../header.component/header.component';
+import { ManagerHeaderComponent } from '../../../shared/components/navigation/manager-header.component/manager-header.component';
 import { ProgramCardComponent } from '../program-card.component/program-card.component';
 import { ScrollToTopComponent } from '../scroll-to-top.component/scroll-to-top.component';
 import { forkJoin, of } from 'rxjs';
@@ -13,7 +13,7 @@ import { Program } from '../model/program.model';
 @Component({
   selector: 'app-all-programs',
   standalone: true,
-  imports: [CommonModule, ProgramCardComponent, HeaderComponent, ScrollToTopComponent],
+  imports: [CommonModule, ProgramCardComponent, ManagerHeaderComponent, ScrollToTopComponent],
   templateUrl: './all-programs.component.html',
   styleUrl: './all-programs.component.css',
 })

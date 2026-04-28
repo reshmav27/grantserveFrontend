@@ -4,13 +4,13 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProgramService } from '../service/program.service';
 import { Observable } from 'rxjs';
-import { HeaderComponent } from '../header.component/header.component';
+import { ManagerHeaderComponent } from '../../../shared/components/navigation/manager-header.component/manager-header.component';
 import { Program } from '../model/program.model';
 
 @Component({
   selector: 'app-program-form.component',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HeaderComponent],
+  imports: [CommonModule, ReactiveFormsModule, ManagerHeaderComponent],
   templateUrl: './program-form.component.html',
   styleUrl: './program-form.component.css',
 })

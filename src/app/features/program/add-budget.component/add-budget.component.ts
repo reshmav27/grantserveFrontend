@@ -2,14 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HeaderComponent } from '../header.component/header.component';
+import { ManagerHeaderComponent } from '../../../shared/components/navigation/manager-header.component/manager-header.component';
 import { ProgramService } from '../service/program.service';
 import { Program } from '../model/program.model';
 
 @Component({
   selector: 'app-add-budget',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HeaderComponent],
+  imports: [CommonModule, ReactiveFormsModule, ManagerHeaderComponent],
   templateUrl: './add-budget.component.html'
 })
 export class AddBudgetComponent implements OnInit {
@@ -69,8 +69,10 @@ export class AddBudgetComponent implements OnInit {
     // 1. First, we need the existing program data to perform a full update
     // because the update API usually expects the full object
     this.programService.searchPrograms(undefined, Number(this.programId)).subscribe({
-      next: (programs) => {
-        const existingProg = programs.find((p: Program) => String(p.programID) === String(this.programId));
+      next: (program) => {
+        // const existingProg = programs.find((p: Program) => String(p.programID) === String(this.programId));
+        const existingProg = program;
+        console.log('Fetched program for update:', existingProg);
 
         if (!existingProg) {
           alert("Program not found. Cannot update budget.");
