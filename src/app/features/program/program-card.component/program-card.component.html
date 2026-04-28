@@ -1,0 +1,63 @@
+<div class="card shadow-sm border-0 p-4 mb-3 h-100 bg-white">
+  <div class="row align-items-center">
+    
+    <div [class.col-md-3]="!isDraft" [class.border-end]="!isDraft">
+      <div class="d-flex justify-content-between align-items-start">
+        <h6 class="fw-bold mb-1">{{ isDraft ? data.prog.title : data.prog.title }}</h6>
+        <button *ngIf="isDraft" class="btn btn-sm btn-outline-primary px-3" routerLink="/programs/edit/{{ data.prog.programID }}">Edit</button>
+      </div>
+      
+      <span class="badge mb-2" 
+            [ngClass]="isDraft ? 'bg-warning text-dark' : (data.prog.status === 'ACTIVE' ? 'bg-success' : (data.prog.status === 'FORECASTED' ? 'text-bg-primary' : 'bg-secondary'))">
+        {{ isDraft ? 'DRAFT' : data.prog.status | uppercase }}
+      </span>
+
+      <p class="text-muted small mb-3">
+        {{ (isDraft ? data.prog.description : data.prog.description) || 'No description available.' }}
+      </p>
+
+      <div class="small text-muted mb-1 mt-auto">
+        Timeline: <strong>{{ isDraft ? data.prog.startDate : data.prog.startDate }} to {{ isDraft ? data.prog.endDate : data.prog.endDate }}</strong>
+      </div>
+
+      <ng-container *ngIf="!isDraft">
+        <div class="small text-muted">
+          Spent Budget: <strong>{{ data.budget.spentAmount | currency:'INR':'symbol':'1.0-0' }}</strong>
+        </div>
+        <div class="small text-muted">
+          Total Budget: <strong>{{ data.budget.totalAmount | currency:'INR':'symbol':'1.0-0' }}</strong>
+        </div>
+      </ng-container>
+    </div>
+
+    @if (!isDraft && data?.analytics?.totalApplications > 0) {
+      <div class="col-md-6 px-4" style="height: 160px;" *ngIf="!isDraft">
+        <canvas #analyticsChart></canvas>
+      </div>
+    } @else if (!isDraft) {
+      <div class="col-md-6 px-4 text-center">
+        <div class="small text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">No Analytics Available</div>
+      </div>
+    }
+
+    @if (!isDraft) {
+      <div class="col-md-3 text-end">
+        <div class="small text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Acceptance Rate</div>
+        <h3 class="fw-bold text-primary mb-0">{{ data.analytics.acceptanceRate }}%</h3>
+        <div class="text-muted small mb-3">{{ data.analytics.approvedApplications }} of {{ data.analytics.totalApplications }} Approved</div>
+        <button class="btn btn-sm btn-outline-danger px-3 rounded-pill mt-3" [disabled]="data.prog.status === 'CLOSED'" (click)="closeProgram(data.prog.programID)">
+          @if (data.prog.status === 'CLOSED') {
+            Program Closed
+          } @else {
+            Close Program
+          }
+        </button>
+        <button class="btn btn-sm btn-outline-primary px-3 rounded-pill mt-2">View Applications</button>
+      </div>
+    }
+
+    <!-- <div *ngIf="isDraft" class="mt-3">
+        <button class="btn btn-sm btn-link text-danger text-decoration-none p-0">Discard Draft</button>
+    </div> -->
+  </div>
+</div>

@@ -1,0 +1,26 @@
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 12px;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+}
+
+.progress-thin {
+    height: 6px;
+    border-radius: 3px;
+}
+
+.badge {
+    font-size: 0.7rem;
+    padding: 0.35em 0.65em;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  pointer-events: auto;
+}

@@ -11,9 +11,9 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 export class Sidebar {
  
-    constructor(private router: Router) {}
+  constructor(private router: Router) {}
 
-    logout() {
+  logout() {
     localStorage.removeItem('token'); // Clears the "drawer"
     this.router.navigate(['/']); // Sends them away
   }

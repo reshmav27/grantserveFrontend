@@ -1,0 +1,22 @@
+.btn-floating {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 1050; /* Ensure it stays above cards */
+}
+
+.btn-floating .btn {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.btn-floating .btn:hover {
+    transform: scale(1.1);
+}

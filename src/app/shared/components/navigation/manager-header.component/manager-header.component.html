@@ -1,0 +1,105 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top">
+  <div class="container">
+    <div class="d-flex flex-column">
+      <a class="navbar-brand fw-bold text-primary fs-4 mb-0" routerLink="/programs">GrantServe</a>
+      <span class="text-uppercase text-muted small fw-bold" style="font-size: 0.7rem">
+        Program Manager Console
+      </span>
+    </div>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+      aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
+      <ul class="navbar-nav gap-lg-3 mt-3 mt-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/programs" routerLinkActive="active">Programs</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" routerLinkActive="active">Applications</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" routerLinkActive="active">Disbursements</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" routerLinkActive="active">Compliance</a>
+        </li>
+        <li>
+          <a class="nav-link logout-link text-danger" (click)="logout()" style="cursor: pointer;">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+@if (showSubHeader && isDashboard) {
+<header class="bg-white border-bottom py-3">
+  <div class="container">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+      
+      <div class="mt-2">
+        <div class="d-flex gap-3 border-bottom">
+          @for (s of availableStatuses; track s.value) {
+          <button (click)="selectStatus(s.value)" 
+            [class.border-primary]="selectedStatus === s.value"
+            [class.text-primary]="selectedStatus === s.value"
+            class="btn btn-link text-decoration-none px-0 py-2 border-bottom border-3 border-transparent fw-bold"
+            style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+            {{ s.label }}
+          </button>
+          }
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <div class="input-group" style="min-width: 250px;">
+          <input type="text" class="form-control" placeholder="Search programs..." 
+                 [(ngModel)]="searchTerm" (input)="applyFilters()" />
+          <button class="btn btn-outline-secondary" (click)="toggleAdvancedFilters()"
+                  [class.active]="showAdvancedFilters">
+            <i class="bi bi-filter"></i>
+          </button>
+        </div>
+
+        <a routerLink="/programs/create" class="btn btn-primary d-flex align-items-center gap-1 text-nowrap">
+          <i class="bi bi-plus-lg"></i>
+          <span class="d-none d-sm-inline">New Program</span>
+          <span class="d-inline d-sm-none">New</span>
+        </a>
+      </div>
+    </div>
+
+    @if (showAdvancedFilters) {
+    <div class="row g-2 mt-3 p-3 bg-light rounded border mx-0 shadow-sm">
+      <div class="col-6 col-md-3">
+        <label class="small fw-bold text-muted">Start Date</label>
+        <input type="date" class="form-control form-control-sm" [(ngModel)]="startDate" (change)="applyFilters()">
+      </div>
+      <div class="col-6 col-md-3">
+        <label class="small fw-bold text-muted">End Date</label>
+        <input type="date" class="form-control form-control-sm" [(ngModel)]="endDate" (change)="applyFilters()">
+      </div>
+      <div class="col-6 col-md-3">
+        <label class="small fw-bold text-muted">Sort By</label>
+        <select class="form-select form-select-sm" [(ngModel)]="sortBy" (change)="applyFilters()">
+          <option value="programID">ID</option>
+          <option value="title">Title</option>
+          <option value="startDate">Start Date</option>
+        </select>
+      </div>
+      <div class="col-6 col-md-3">
+        <label class="small fw-bold text-muted">Direction</label>
+        <select class="form-select form-select-sm" [(ngModel)]="direction" (change)="applyFilters()">
+          <option value="desc">Descending</option>
+          <option value="asc">Ascending</option>
+        </select>
+      </div>
+    </div>
+    }
+  </div>
+</header>
+}
