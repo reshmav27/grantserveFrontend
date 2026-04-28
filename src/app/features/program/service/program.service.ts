@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Program } from '../model/program.model';
 import { JwtService } from '../../../core/services/jwtService/jwt-service';
 import { environment } from '../../../../environments/environment';
+import { PagedResponse } from '../model/paged-model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +18,6 @@ export class ProgramService {
     this.apiUrl = `${environment.BASE_URL}/program-service/api/v1/programs`;
   }
 
-  // Fetches all programs using @GetMapping
-  // getPrograms(): Observable<Program[]> {
-  //   return this.http.get<Program[]>(this.apiUrl);
-  // }
-
   // Fetches active programs using @GetMapping("/active")
   getActivePrograms(): Observable<Program[]> {
     return this.http.get<Program[]>(`${this.apiUrl}/active`);
@@ -31,18 +27,22 @@ export class ProgramService {
   searchPrograms(
     title?: string,
     id?: number,
-    statuses?: string[], // Changed from status: string to statuses: string[]
+    status?: string,
+    startDate?: string,
+    endDate?: string,
     currentPage: number = 0,
     pageSize: number = 10,
     sortBy: string = 'programID',
     direction: string = 'desc'
-  ): Observable<any> { // Note: returns 'any' or 'Page<Program>' because of pagination
+  ): Observable<PagedResponse<any>> {
+    
+    // Build Pageable parameters
     let params = new HttpParams()
       .set('page', currentPage.toString())
       .set('size', pageSize.toString())
-      .set('sortBy', sortBy)
-      .set('direction', direction);
+      .set('sort', `${sortBy},${direction}`); // Format: field,direction for Pageable
 
+    // Apply optional filters
     if (title) {
       params = params.set('title', title);
     }
@@ -51,15 +51,21 @@ export class ProgramService {
       params = params.set('id', id.toString());
     }
 
-    // Handle multiple statuses
-    if (statuses && statuses.length > 0) {
-      statuses.forEach(s => {
-        // .append() adds multiple values for the same key 'statuses'
-        params = params.append('statuses', s);
-      });
+    // Status handling
+    if (status && status !== 'ALL') {
+      params = params.set('status', status);
     }
 
-    return this.http.get<any>(`${this.apiUrl}/manager/search`, { params });
+    // Date Filters
+    if (startDate) {
+      params = params.set('start', startDate);
+    }
+
+    if (endDate) {
+      params = params.set('end', endDate);
+    }
+
+    return this.http.get<PagedResponse<any>>(`${this.apiUrl}/manager/search`, { params });
   }
 
   // Creates a new program using @PostMapping("/createProgram")

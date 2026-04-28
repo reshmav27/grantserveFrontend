@@ -15,16 +15,21 @@
     <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
       <ul class="navbar-nav gap-lg-3 mt-3 mt-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" routerLink="/programs">Programs</a>
+          <a class="nav-link" routerLink="/programs" routerLinkActive="active">Programs</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Applications</a>
+          <a class="nav-link" href="#" routerLinkActive="active">Applications</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Disbursements</a>
+          <a class="nav-link" href="#" routerLinkActive="active">Disbursements</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Compliance</a>
+          <a class="nav-link" href="#" routerLinkActive="active">Compliance</a>
+        </li>
+        <li>
+          <a class="nav-link logout-link text-danger" (click)="logout()" style="cursor: pointer;">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </a>
         </li>
       </ul>
     </div>
@@ -32,52 +37,69 @@
 </nav>
 
 @if (showSubHeader && isDashboard) {
-  <header class="bg-white border-bottom py-3">
-    <div class="container">
-      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-        <h4 class="fw-bold mb-0">Programs Dashboard</h4>
-        
-        <div>
-          <div class="d-flex align-items-center gap-2 w-100 w-md-auto">
-            <div class="input-group" style="flex: 1; min-width: 200px; max-width: 400px;">
-              <input type="text" class="form-control" placeholder="Search programs..." />
-              <button class="btn btn-outline-secondary">
-                <i class="bi bi-filter"></i>
-              </button>
-            </div>
-            
-            <a routerLink="/programs/create" class="btn btn-primary d-flex align-items-center gap-1 text-nowrap">
-              <i class="bi bi-plus-lg"></i>
-              <span class="d-none d-sm-inline">New Program</span>
-              <span class="d-inline d-sm-none">New</span>
-            </a>
-          </div>
+<header class="bg-white border-bottom py-3">
+  <div class="container">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+      
+      <div class="mt-2">
+        <div class="d-flex gap-3 border-bottom">
+          @for (s of availableStatuses; track s.value) {
+          <button (click)="selectStatus(s.value)" 
+            [class.border-primary]="selectedStatus === s.value"
+            [class.text-primary]="selectedStatus === s.value"
+            class="btn btn-link text-decoration-none px-0 py-2 border-bottom border-3 border-transparent fw-bold"
+            style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+            {{ s.label }}
+          </button>
+          }
         </div>
       </div>
-    </div>
-  </header>
-}
 
-@if (showSubHeader && !isDashboard) {
-  <header class="bg-white border-bottom mb-4 py-2">
-    <div class="container">
-      <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
-        <div class="d-flex align-items-center gap-3">
-          <a [routerLink]="['/programs']" class="btn btn-sm btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> <span class="d-none d-sm-inline">Back</span>
-          </a>
-          <span class="fw-bold text-dark fs-5 text-truncate">{{ title }}</span>
+      <div class="d-flex align-items-center gap-2">
+        <div class="input-group" style="min-width: 250px;">
+          <input type="text" class="form-control" placeholder="Search programs..." 
+                 [(ngModel)]="searchTerm" (input)="applyFilters()" />
+          <button class="btn btn-outline-secondary" (click)="toggleAdvancedFilters()"
+                  [class.active]="showAdvancedFilters">
+            <i class="bi bi-filter"></i>
+          </button>
         </div>
-        
-        <div class="d-flex align-items-center gap-2 w-md-auto">
-          <input type="text" class="form-control" placeholder="Search..." style="max-width: 300px; flex: 1" />
-          
-          <a routerLink="/programs/create" class="btn btn-primary btn-sm d-flex align-items-center gap-1 text-nowrap">
-            <i class="bi bi-plus-lg"></i>
-            <span>New Program</span>
-          </a>
-        </div>
+
+        <a routerLink="/programs/create" class="btn btn-primary d-flex align-items-center gap-1 text-nowrap">
+          <i class="bi bi-plus-lg"></i>
+          <span class="d-none d-sm-inline">New Program</span>
+          <span class="d-inline d-sm-none">New</span>
+        </a>
       </div>
     </div>
-  </header>
+
+    @if (showAdvancedFilters) {
+    <div class="row g-2 mt-3 p-3 bg-light rounded border mx-0 shadow-sm">
+      <div class="col-6 col-md-3">
+        <label class="small fw-bold text-muted">Start Date</label>
+        <input type="date" class="form-control form-control-sm" [(ngModel)]="startDate" (change)="applyFilters()">
+      </div>
+      <div class="col-6 col-md-3">
+        <label class="small fw-bold text-muted">End Date</label>
+        <input type="date" class="form-control form-control-sm" [(ngModel)]="endDate" (change)="applyFilters()">
+      </div>
+      <div class="col-6 col-md-3">
+        <label class="small fw-bold text-muted">Sort By</label>
+        <select class="form-select form-select-sm" [(ngModel)]="sortBy" (change)="applyFilters()">
+          <option value="programID">ID</option>
+          <option value="title">Title</option>
+          <option value="startDate">Start Date</option>
+        </select>
+      </div>
+      <div class="col-6 col-md-3">
+        <label class="small fw-bold text-muted">Direction</label>
+        <select class="form-select form-select-sm" [(ngModel)]="direction" (change)="applyFilters()">
+          <option value="desc">Descending</option>
+          <option value="asc">Ascending</option>
+        </select>
+      </div>
+    </div>
+    }
+  </div>
+</header>
 }

@@ -4,7 +4,6 @@ import { authGuard } from './core/guards/auth-guard';
 import { ProgramComponent } from './features/program/program.component/program.component';
 import { ProgramFormComponent } from './features/program/program-form.component/program-form.component';
 import { AddBudgetComponent } from './features/program/add-budget.component/add-budget.component';
-import { AllProgramsComponent } from './features/program/all-programs.component/all-programs.component';
 
 export const routes: Routes = [
     { path: '', component: Login },
@@ -63,12 +62,6 @@ export const routes: Routes = [
     {
         path: 'add-budget',
         component: AddBudgetComponent,
-        canActivate: [authGuard],
-        data: { roles: ['MANAGER', 'ADMIN'] }
-    },
-    {
-        path: 'programs/view-all/:type',
-        component: AllProgramsComponent,
         canActivate: [authGuard],
         data: { roles: ['MANAGER', 'ADMIN'] }
     }

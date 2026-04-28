@@ -1,10 +1,10 @@
-<div class="card shadow-sm border-0 p-4 mb-3 h-100" [class.bg-white]="true">
-  <div [class.row]="!isDraft" [class.align-items-center]="!isDraft" [class.d-flex]="isDraft" [class.flex-column]="isDraft" [class.h-100]="isDraft">
+<div class="card shadow-sm border-0 p-4 mb-3 h-100 bg-white">
+  <div class="row align-items-center">
     
     <div [class.col-md-3]="!isDraft" [class.border-end]="!isDraft">
       <div class="d-flex justify-content-between align-items-start">
-        <h6 class="fw-bold mb-1">{{ isDraft ? data.title : data.prog.title }}</h6>
-        <button *ngIf="isDraft" class="btn btn-sm btn-outline-primary px-3" routerLink="/programs/edit/{{ data.programID }}">Edit</button>
+        <h6 class="fw-bold mb-1">{{ isDraft ? data.prog.title : data.prog.title }}</h6>
+        <button *ngIf="isDraft" class="btn btn-sm btn-outline-primary px-3" routerLink="/programs/edit/{{ data.prog.programID }}">Edit</button>
       </div>
       
       <span class="badge mb-2" 
@@ -13,11 +13,11 @@
       </span>
 
       <p class="text-muted small mb-3">
-        {{ (isDraft ? data.description : data.prog.description) || 'No description available.' }}
+        {{ (isDraft ? data.prog.description : data.prog.description) || 'No description available.' }}
       </p>
 
       <div class="small text-muted mb-1 mt-auto">
-        Timeline: <strong>{{ isDraft ? data.startDate : data.prog.startDate }} to {{ isDraft ? data.endDate : data.prog.endDate }}</strong>
+        Timeline: <strong>{{ isDraft ? data.prog.startDate : data.prog.startDate }} to {{ isDraft ? data.prog.endDate : data.prog.endDate }}</strong>
       </div>
 
       <ng-container *ngIf="!isDraft">

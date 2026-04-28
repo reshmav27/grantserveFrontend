@@ -1,41 +1,26 @@
-<app-manager-header [showSubHeader]="true" [isDashboard]="true"></app-manager-header>
+<app-manager-header 
+  [showSubHeader]="true" 
+  [isDashboard]="true" 
+  (filterChange)="onFilterChange($event)">
+</app-manager-header>
 
 <div class="container mt-4">
   @if (isLoading) {
-    <div class="text-center my-5">
-      <div class="spinner-border text-primary" role="status"></div>
-      <p>Loading Dashboard...</p>
+    } @else {
+    <div class="row g-4">
+      @for (item of allPrograms; track item.prog.programID; let i = $index) {
+          <app-program-card 
+            [data]="item" 
+            [index]="i" 
+            [isDraft]="item.isDraft">
+          </app-program-card>
+      } @empty {
+        <div class="text-center my-5 text-muted">
+          <i class="bi bi-search fs-1"></i>
+          <p class="mt-2">No programs found for the selected status.</p>
+        </div>
+      }
     </div>
-  } @else {
-    <section class="mb-5">
-      <div class="container">
-        <div class="d-flex justify-content-between align-items-center mt-4">
-          <h5 class="fw-bold text-secondary">Your Drafts</h5>
-          <a [routerLink]="['/programs/view-all', 'draft']"
-            class="btn btn-sm btn-link text-primary fw-bold text-decoration-none d-inline-flex align-items-center">
-            View All
-            <i class="bi bi-chevron-right ms-1" style="font-size: 1rem; line-height: 1;"></i>
-          </a>
-        </div>
-        <div class="row g-4">
-          <div class="col-md-6" *ngFor="let draft of draftPrograms | slice:0:4; let i = index">
-            <app-program-card [data]="draft" [index]="i" [isDraft]="true"></app-program-card>
-          </div>
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center mt-4">
-          <h5 class="fw-bold text-secondary">Active & Published Programs</h5>
-          <a [routerLink]="['/programs/view-all', 'active']"
-            class="btn btn-sm btn-link text-primary fw-bold text-decoration-none d-inline-flex align-items-center">
-            View All
-            <i class="bi bi-chevron-right ms-1" style="font-size: 1rem; line-height: 1;"></i>
-          </a>
-        </div>
-        <div *ngFor="let program of activePrograms | slice:0:4; let i = index">
-          <app-program-card [data]="program" [index]="i"></app-program-card>
-        </div>
-      </div>
-    </section>
   }
 </div>
 
