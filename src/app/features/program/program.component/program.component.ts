@@ -82,6 +82,7 @@ export class ProgramComponent implements OnInit {
                 analytics: analytics[prog.programID] || { totalApplications: 0, acceptanceRate: 0 }
               };
             });
+            console.log('Mapped Program Data:', mapped);
             return of(mapped);
           })
         );
@@ -91,6 +92,8 @@ export class ProgramComponent implements OnInit {
         this.allPrograms = mappedData;
         this.isLoading = false;
         this.cdr.detectChanges();
+
+        // console.log('Mapped Program Data:', this.allPrograms);
       }
     });
   }
