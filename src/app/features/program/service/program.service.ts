@@ -80,6 +80,13 @@ export class ProgramService {
     });
   }
 
+  // Update program status to ACTIVE and set budget using @PatchMapping("/{id}/publish")
+  publishProgram(id: number, budget: number): Observable<string> {
+    return this.http.patch(`${this.apiUrl}/${id}/publish`, { budget }, {
+      responseType: 'text'
+    });
+  }
+
   // Closes a program using @PatchMapping("/{id}/close")
   closeProgram(id: number): Observable<string> {
     return this.http.patch<string>(`${this.apiUrl}/${id}/close`, {});
