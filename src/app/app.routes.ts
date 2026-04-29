@@ -4,7 +4,7 @@ import { authGuard } from './core/guards/auth-guard';
 import { ProgramComponent } from './features/program/program.component/program.component';
 import { ProgramFormComponent } from './features/program/program-form.component/program-form.component';
 import { AddBudgetComponent } from './features/program/add-budget.component/add-budget.component';
-
+import { ReviewerDashboard } from './features/review/reviewer-dashboard/reviewer-dashboard.component';
 export const routes: Routes = [
     { path: '', component: Login },
     {
@@ -64,6 +64,12 @@ export const routes: Routes = [
         component: AddBudgetComponent,
         canActivate: [authGuard],
         data: { roles: ['MANAGER', 'ADMIN'] }
+    },
+    {
+        path: 'reviewer-dashboard',
+        component: ReviewerDashboard,
+        canActivate: [authGuard],
+        data: { roles: ['REVIEWER'] } 
     }
 
 ];

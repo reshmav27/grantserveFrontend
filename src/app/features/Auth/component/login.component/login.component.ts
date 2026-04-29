@@ -53,7 +53,7 @@ export class Login {
         this.router.navigate(['/home']); 
         break;
       case 'REVIEWER':
-        this.router.navigate(['/applications/review-list']);
+        this.router.navigate(['/reviewer-dashboard']);
         break;
       case 'COMPLIANCE':
       case 'AUDITOR':

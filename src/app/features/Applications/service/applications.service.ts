@@ -10,6 +10,8 @@ export class ApplicationsService {
    readonly userId: Number | null;
    readonly baseUrl: string;
   constructor(private Http :HttpClient, private JwtService: JwtService){
+    const user = this.JwtService.getUserId();
+    console.log('Fetching applications for User ID:', user);
     this.userId = this.JwtService.getUserId();
     this.baseUrl = `${environment.BASE_URL}/application-service/GrantApplication/FetchGrantApplication/${this.userId}`;
   }
