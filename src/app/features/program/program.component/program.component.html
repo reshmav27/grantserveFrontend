@@ -1,0 +1,27 @@
+<app-manager-header 
+  [showSubHeader]="true" 
+  [isDashboard]="true" 
+  (filterChange)="onFilterChange($event)">
+</app-manager-header>
+
+<div class="container mt-4">
+  @if (isLoading) {
+    } @else {
+    <div class="row g-4">
+      @for (item of allPrograms; track item.prog.programID; let i = $index) {
+          <app-program-card 
+            [data]="item" 
+            [index]="i" 
+            [isDraft]="item.isDraft">
+          </app-program-card>
+      } @empty {
+        <div class="text-center my-5 text-muted">
+          <i class="bi bi-search fs-1"></i>
+          <p class="mt-2">No programs found for the selected status.</p>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<app-scroll-to-top></app-scroll-to-top>
