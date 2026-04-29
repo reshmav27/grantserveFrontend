@@ -21,6 +21,11 @@ export class ProgramCardComponent implements AfterViewInit {
 
   @ViewChild('analyticsChart') chartCanvas!: ElementRef<HTMLCanvasElement>;
 
+  isExpanded: boolean = false;
+  isTitleExpanded: boolean = false;
+  readonly DESC_LIMIT = 170;
+  readonly TITLE_LIMIT = 100;
+
   constructor(
     private programService: ProgramService,
     private cdr: ChangeDetectorRef
@@ -30,6 +35,30 @@ export class ProgramCardComponent implements AfterViewInit {
     if (!this.isDraft && this.data?.analytics?.monthlyStats?.labels?.length > 0) {
       this.initChart();
     }
+  }
+
+  toggleDescription() {
+    this.isExpanded = !this.isExpanded;
+  }
+
+  get description(): string {
+    return this.data?.prog?.description || 'No description available.';
+  }
+
+  get shouldShowReadMore(): boolean {
+    return this.description.length > this.DESC_LIMIT;
+  }
+
+  toggleTitle() {
+    this.isTitleExpanded = !this.isTitleExpanded;
+  }
+
+  get programTitle(): string {
+    return this.data?.prog?.title || 'No Title';
+  }
+
+  get shouldShowTitleReadMore(): boolean {
+    return this.programTitle.length > this.TITLE_LIMIT;
   }
 
   initChart() {

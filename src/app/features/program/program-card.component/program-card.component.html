@@ -3,7 +3,21 @@
     
     <div [class.col-md-3]="!isDraft" [class.border-end]="!isDraft">
       <div class="d-flex justify-content-between align-items-start">
-        <h6 class="fw-bold mb-1">{{ isDraft ? data.prog.title : data.prog.title }}</h6>
+         <h6 class="fw-bold mb-1">
+          @if (isTitleExpanded || !shouldShowTitleReadMore) {
+            {{ programTitle }}
+          } @else {
+            {{ programTitle | slice:0:TITLE_LIMIT }}...
+          }
+
+          <button 
+            *ngIf="shouldShowTitleReadMore" 
+            (click)="toggleTitle()" 
+            class="btn btn-link p-0 ms-1 fw-bold text-decoration-none" 
+            style="font-size: 0.7rem; vertical-align: middle;">
+            {{ isTitleExpanded ? '(less)' : '(more)' }}
+          </button>
+        </h6>
         <button *ngIf="isDraft" class="btn btn-sm btn-outline-primary px-3" routerLink="/programs/edit/{{ data.prog.programID }}">Edit</button>
       </div>
       
@@ -12,9 +26,23 @@
         {{ isDraft ? 'DRAFT' : data.prog.status | uppercase }}
       </span>
 
-      <p class="text-muted small mb-3">
-        {{ (isDraft ? data.prog.description : data.prog.description) || 'No description available.' }}
-      </p>
+      <div class="mb-3">
+        <p class="text-muted small mb-1">
+          @if (isExpanded || !shouldShowReadMore) {
+            {{ description }}
+          } @else {
+            {{ description | slice:0:DESC_LIMIT }}...
+          }
+        </p>
+        
+        <button 
+          *ngIf="shouldShowReadMore" 
+          (click)="toggleDescription()" 
+          class="btn btn-link p-0 small fw-bold text-decoration-none" 
+          style="font-size: 0.75rem;">
+          {{ isExpanded ? 'Read Less' : 'Read More' }}
+        </button>
+      </div>
 
       <div class="small text-muted mb-1 mt-auto">
         Timeline: <strong>{{ isDraft ? data.prog.startDate : data.prog.startDate }} to {{ isDraft ? data.prog.endDate : data.prog.endDate }}</strong>
