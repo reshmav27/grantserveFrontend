@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControlOptions } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProgramService } from '../service/program.service';
 import { finalize, Observable } from 'rxjs';
@@ -45,11 +45,13 @@ export class ProgramFormComponent implements OnInit {
 
   private initForm(): void {
     this.programForm = this.fb.group({
-      title: ['', Validators.required],
-      description: ['', Validators.required],
+      title: ['', [Validators.required, Validators.maxLength(200)]],
+      description: ['', [Validators.required, Validators.maxLength(5000)]],
       startDate: ['', [Validators.required, this.futureDateValidator]],
       endDate: ['', Validators.required]
-    }, { validators: this.dateRangeValidator });
+    }, {
+      validators: [this.dateRangeValidator]
+    } as AbstractControlOptions );
   }
 
   dateRangeValidator(group: FormGroup): any {
