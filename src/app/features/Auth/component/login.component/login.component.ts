@@ -25,6 +25,12 @@ export class Login {
           // 1. Store the token and role securely
           localStorage.setItem('token', response.token);
           localStorage.setItem('userRole', response.role);
+        // The '?' check prevents the 'null' error you are seeing
+if (response.userid) {
+  localStorage.setItem('userId', response.userid.toString());
+} else {
+  console.warn("User ID is missing from the server response");
+}
           console.log(response.message);
           // if (response.role === 'MANAGER') {
             // Redirect to manager dashboard
@@ -53,7 +59,7 @@ export class Login {
         this.router.navigate(['/home']); 
         break;
       case 'REVIEWER':
-        this.router.navigate(['/applications/review-list']);
+        this.router.navigate(['/reviewer-dashboard']);
         break;
       case 'COMPLIANCE':
       case 'AUDITOR':
