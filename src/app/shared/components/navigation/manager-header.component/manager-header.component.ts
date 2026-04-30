@@ -40,7 +40,6 @@ export class ManagerHeaderComponent {
     { label: 'Compliance', route: '/compliance', icon: 'bi-shield-check' }
   ];
 
-
   // Internal State
   selectedStatus: string = 'ALL';
   searchTerm: string = '';

@@ -18,6 +18,11 @@ export class ProgramDataService {
     return this.http.get<any[]>(this.budgetUrl);
   }
 
+  // Target: BudgetController -> getAllBudgets()
+  getBudgetByBudgetId(id: number): Observable<any> {
+    return this.http.get<any>(this.budgetUrl, { params: { id: id } });
+  }
+
   // Target: GrantApplicationController -> getBulkAnalytics()
   // Uses @RequestParam for the list of IDs
   getBulkAnalytics(programIds: number[]): Observable<Record<string, ProgramAnalytics>> {

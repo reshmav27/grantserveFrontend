@@ -6,6 +6,7 @@ import { ProgramFormComponent } from './features/program/program-form.component/
 import { AddBudgetComponent } from './features/program/add-budget.component/add-budget.component';
 import { ReviewerDashboard } from './features/review/reviewer-dashboard/reviewer-dashboard.component';
 import { ProgramListComponent } from './features/Applications/program-list.component/program-list.component';
+import { ViewProgramComponent } from './features/program/view-program.component/view-program.component';
 
 export const routes: Routes = [
     { path: '', component: Login },
@@ -41,6 +42,12 @@ export const routes: Routes = [
         component: ProgramComponent,
         canActivate: [authGuard],
         data: { roles: ['MANAGER', 'ADMIN'] }
+    },
+    {
+        path: 'programs/:id',
+        component: ViewProgramComponent,
+        canActivate: [authGuard],
+        data: { roles: ['MANAGER', 'ADMIN', 'RESEARCHER'] }
     },
     {
         path: 'program/new',
