@@ -63,6 +63,7 @@ clearSearch() {
 }
 
   loadAllData() {
+    
     this.App.getApplications().subscribe({
       next: (res: any) => {
         this.allApplications = res;
