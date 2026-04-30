@@ -21,15 +21,20 @@ export class ProgramListComponent implements OnInit {
   errorMessage: string = '';
 
   searchTerm: string = '';
+  status: string = 'ALL';
   startDate: string = '';
   endDate: string = '';
   sortBy: string = 'programID';
   direction: string = 'desc';
   showAdvancedFilters: boolean = false;
+  
+  currentPage: number = 0;
+  totalPages: number = 0;
+  pageSize: number = 10;
 
   currentFilters: FilterCriteria = {
     title: '',
-    status: 'ACTIVE',
+    status: '',
     sortBy: '',
     direction: ''
   };
@@ -51,7 +56,8 @@ export class ProgramListComponent implements OnInit {
       startDate: this.startDate || undefined,
       endDate: this.endDate || undefined,
       sortBy: this.sortBy,
-      direction: this.direction
+      direction: this.direction,
+      status: this.status === "ALL" ? undefined : this.status
     };
     
     this.loadPrograms(this.currentFilters);
@@ -61,8 +67,17 @@ export class ProgramListComponent implements OnInit {
     this.showAdvancedFilters = !this.showAdvancedFilters;
   }
 
-  loadPrograms(criteria: FilterCriteria): void {
+  goToPage(page: number): void {
+    if (page >= 0 && page < this.totalPages) {
+      this.loadPrograms(this.currentFilters, page);
+      // Scroll to top of results
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  loadPrograms(criteria: FilterCriteria, page: number = 0): void {
       this.isLoading = true;
+      this.currentPage = page;
       
       this.programService.searchProgramsForResearcher(
         criteria.title,
@@ -70,12 +85,15 @@ export class ProgramListComponent implements OnInit {
         criteria.status,
         criteria.startDate,
         criteria.endDate,
-        0, // Page reset
-        10,
+        this.currentPage,
+        this.pageSize,
         criteria.sortBy,
         criteria.direction
       ).pipe(
         switchMap((response: PagedResponse<any>) => {
+          this.currentPage = response.page?.number || 0;
+          this.totalPages = response.page?.totalPages || 0;
+
           const content = response.content || [];
           if (content.length === 0) return of([]);
   

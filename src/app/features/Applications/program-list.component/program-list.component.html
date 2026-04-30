@@ -3,7 +3,7 @@
 
   <main class="flex-grow-1 overflow-auto bg-light scroll-container">
     <div class="container mt-4">
-      
+
       <div class="header-section mb-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
           <div>
@@ -15,10 +15,10 @@
             <span class="input-group-text bg-white border-end-0">
               <i class="bi bi-search text-muted"></i>
             </span>
-            <input type="text" class="form-control border-start-0" placeholder="Search programs..." 
-                   [(ngModel)]="searchTerm" (input)="applyFilters()" />
-            <button class="btn btn-outline-secondary" (click)="toggleAdvancedFilters()" 
-                    [class.active]="showAdvancedFilters">
+            <input type="text" class="form-control border-start-0" placeholder="Search programs..."
+              [(ngModel)]="searchTerm" (input)="applyFilters()" />
+            <button class="btn btn-outline-secondary" (click)="toggleAdvancedFilters()"
+              [class.active]="showAdvancedFilters">
               <i class="bi bi-filter"></i>
             </button>
           </div>
@@ -26,15 +26,24 @@
 
         @if (showAdvancedFilters) {
         <div class="row g-2 mt-3 p-3 bg-white rounded border mx-0 shadow-sm animate__animated animate__fadeIn">
-          <div class="col-6 col-md-3">
+          <div class="col-6 col-md">
+            <label class="small fw-bold text-muted">Status</label>
+            <select class="form-select form-select-sm" [(ngModel)]="status" (change)="applyFilters()">
+              <option value="ALL" selected>All</option>
+              <option value="ACTIVE">Active</option>
+              <option value="FORECASTED">Forecasted</option>
+              <option value="CLOSED">Closed</option>
+            </select>
+          </div>
+          <div class="col-6 col-md">
             <label class="small fw-bold text-muted">Start Date</label>
             <input type="date" class="form-control form-control-sm" [(ngModel)]="startDate" (change)="applyFilters()">
           </div>
-          <div class="col-6 col-md-3">
+          <div class="col-6 col-md">
             <label class="small fw-bold text-muted">End Date</label>
             <input type="date" class="form-control form-control-sm" [(ngModel)]="endDate" (change)="applyFilters()">
           </div>
-          <div class="col-6 col-md-3">
+          <div class="col-6 col-md">
             <label class="small fw-bold text-muted">Sort By</label>
             <select class="form-select form-select-sm" [(ngModel)]="sortBy" (change)="applyFilters()">
               <option value="programID">ID</option>
@@ -42,7 +51,7 @@
               <option value="startDate">Start Date</option>
             </select>
           </div>
-          <div class="col-6 col-md-3">
+          <div class="col-6 col-md">
             <label class="small fw-bold text-muted">Direction</label>
             <select class="form-select form-select-sm" [(ngModel)]="direction" (change)="applyFilters()">
               <option value="desc">Descending</option>
@@ -54,36 +63,68 @@
       </div>
 
       @if (isLoading) {
-        <div class="text-center my-5">
-          <div class="spinner-border text-primary" role="status"></div>
-          <p class="mt-2 text-primary">Filtering programs...</p>
-        </div>
+      <div class="text-center my-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="mt-2 text-primary">Filtering programs...</p>
+      </div>
       }
 
       @if (errorMessage) {
-        <div class="alert alert-danger" role="alert">
-          <i class="bi bi-exclamation-triangle-fill"></i> {{ errorMessage }}
-        </div>
+      <div class="alert alert-danger" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i> {{ errorMessage }}
+      </div>
       }
 
       @if (!isLoading) {
-        @if (pagedData && pagedData.length > 0) {
-          <div class="row">
-            @for (item of pagedData; track item.prog.programID) {
-              <div class="col-md-6 mb-4">
-                <app-program-card [data]="item" [index]="$index" [viewMode]="'researcher'">
-                </app-program-card>
-              </div>
-            }
-          </div>
-        } @else {
-          <div class="text-center my-5 py-5 border rounded bg-white">
-            <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
-            <h4 class="mt-3">No Results Found</h4>
-            <p class="text-muted">Try adjusting your filters or search terms.</p>
-          </div>
+      @if (pagedData && pagedData.length > 0) {
+      <div class="row">
+        @for (item of pagedData; track item.prog.programID) {
+        <div class="col-md-6 mb-4">
+          <app-program-card [data]="item" [index]="$index" [viewMode]="'researcher'">
+          </app-program-card>
+        </div>
         }
+      </div>
+      } @else {
+      <div class="text-center my-5 py-5 border rounded bg-white">
+        <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+        <h4 class="mt-3">No Results Found</h4>
+        <p class="text-muted">Try adjusting your filters or search terms.</p>
+      </div>
+      }
       }
     </div>
   </main>
 </div>
+
+@if (!isLoading && totalPages > 1) {
+<nav aria-label="Program pagination" class="mt-4">
+  <ul class="pagination justify-content-center">
+
+    <li class="page-item" [class.disabled]="currentPage === 0">
+      <button class="page-link" (click)="goToPage(currentPage - 1)">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+    </li>
+
+    @for (p of [].constructor(totalPages); track $index) {
+    <li class="page-item" [class.active]="$index === currentPage">
+      <button class="page-link" (click)="goToPage($index)">
+        {{ $index + 1 }}
+      </button>
+    </li>
+    }
+
+    <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+      <button class="page-link" (click)="goToPage(currentPage + 1)">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </li>
+
+  </ul>
+</nav>
+
+<div class="text-center text-muted small mt-2">
+  Page {{ currentPage + 1 }} of {{ totalPages }}
+</div>
+}
