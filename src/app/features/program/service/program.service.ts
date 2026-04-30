@@ -35,7 +35,7 @@ export class ProgramService {
     sortBy: string = 'programID',
     direction: string = 'desc'
   ): Observable<PagedResponse<any>> {
-    
+
     // Build Pageable parameters
     let params = new HttpParams()
       .set('page', currentPage.toString())
@@ -66,6 +66,31 @@ export class ProgramService {
     }
 
     return this.http.get<PagedResponse<any>>(`${this.apiUrl}/manager/search`, { params });
+  }
+
+  searchProgramsForResearcher(
+    title?: string,
+    id?: number,
+    status?: string,
+    startDate?: string,
+    endDate?: string,
+    currentPage: number = 0,
+    pageSize: number = 10,
+    sortBy: string = 'programID',
+    direction: string = 'desc'
+  ): Observable<PagedResponse<any>> {
+    let params = new HttpParams()
+      .set('page', currentPage.toString())
+      .set('size', pageSize.toString())
+      .set('sort', `${sortBy},${direction}`);
+
+    // Only add params if they have values
+    if (title) params = params.set('title', title);
+    if (status) params = params.set('status', status);
+    if (startDate) params = params.set('start', startDate);
+    if (endDate) params = params.set('end', endDate);
+
+    return this.http.get<PagedResponse<any>>(`${this.apiUrl}/search`, { params });
   }
 
   // Creates a new program using @PostMapping("/createProgram")

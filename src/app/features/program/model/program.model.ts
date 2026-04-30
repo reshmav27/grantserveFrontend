@@ -28,3 +28,5 @@ export interface ProgramAnalytics {
     pending: number[];
   };
 }
+
+export type ProgramViewStatus = 'ACTIVE' | 'FORECASTED';
