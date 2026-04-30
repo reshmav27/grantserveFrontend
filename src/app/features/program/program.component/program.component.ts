@@ -4,12 +4,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProgramDataService } from '../service/program-data.service';
 import { forkJoin, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, map, catchError, finalize, tap } from 'rxjs/operators';
 import { ProgramCardComponent } from '../program-card.component/program-card.component';
 import { ManagerHeaderComponent } from '../../../shared/components/navigation/manager-header.component/manager-header.component';
 import { ScrollToTopComponent } from '../scroll-to-top.component/scroll-to-top.component';
 import { FilterCriteria } from '../../../shared/components/navigation/manager-header.component/manager-header.component';
-import { PagedResponse } from '../model/paged-model';
 
 @Component({
   selector: 'app-program',
@@ -53,13 +52,19 @@ export class ProgramComponent implements OnInit {
       criteria.status,
       criteria.startDate,
       criteria.endDate,
-      0, // Page reset
+      0, 
       10,
       criteria.sortBy,
       criteria.direction
     ).pipe(
-      switchMap((response: PagedResponse<any>) => {
-        const content = response.content || [];
+      tap(response => console.log('1. Raw API Result:', response)),
+      
+      switchMap((response: any) => {
+        // FIX: Handle both PagedResponse { content: [] } and raw Array []
+        const content = Array.isArray(response) ? response : (response?.content || []);
+        
+        console.log('2. Extracted Content:', content);
+
         if (content.length === 0) return of([]);
 
         const ids = content.map((p: any) => Number(p.programID));
@@ -92,10 +97,7 @@ export class ProgramComponent implements OnInit {
         this.allPrograms = mappedData;
         this.isLoading = false;
         this.cdr.detectChanges();
-
-        // console.log('Mapped Program Data:', this.allPrograms);
       }
     });
   }
-
 }
