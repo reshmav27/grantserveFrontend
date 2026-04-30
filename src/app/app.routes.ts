@@ -5,12 +5,19 @@ import { ProgramComponent } from './features/program/program.component/program.c
 import { ProgramFormComponent } from './features/program/program-form.component/program-form.component';
 import { AddBudgetComponent } from './features/program/add-budget.component/add-budget.component';
 import { ReviewerDashboard } from './features/review/reviewer-dashboard/reviewer-dashboard.component';
+import { ProgramListComponent } from './features/Applications/program-list.component/program-list.component';
+
 export const routes: Routes = [
     { path: '', component: Login },
     {
         path: 'home',
         canActivate: [authGuard],
         loadComponent: () => import('./features/home-layout/home-layout').then(m => m.HomeLayout)
+    },
+    {
+        path: 'home/programs',
+        canActivate: [authGuard],
+        component: ProgramListComponent
     },
     {
         path: 'profile',

@@ -71,42 +71,32 @@ export class ProgramComponent implements OnInit {
 
         return forkJoin({
           list: of(content),
-          budgets: this.dataService.getAllBudgets().pipe(catchError(() => of([]))),
-          analytics: this.dataService.getBulkAnalytics(ids).pipe(catchError(() => of({})))
-        });
-      }),
-      map((combinedData: any) => {
-        if (Array.isArray(combinedData) && combinedData.length === 0) return [];
-
-        const { list, budgets, analytics } = combinedData;
-
-        return list.map((prog: any) => {
-          // Ensure ID matching handles string vs number
-          const budgetData = budgets.find((b: any) => b.programId == prog.programID);
-          
-          return {
-            prog: prog,
-            isDraft: prog.status?.toUpperCase() === 'DRAFT',
-            budget: {
-              spentAmount: budgetData?.spentAmount || 0,
-              totalAmount: budgetData?.allocatedAmount || 0
-            },
-            analytics: analytics[prog.programID] || { totalApplications: 0, acceptanceRate: 0 }
-          };
-        });
-      }),
-      finalize(() => {
-        this.isLoading = false;
-        this.cdr.detectChanges();
+          budgets: this.dataService.getAllBudgets(),
+          analytics: this.dataService.getBulkAnalytics(ids)
+        }).pipe(
+          switchMap(({ list, budgets, analytics }) => {
+            const mapped = list.map((prog: any) => {
+              const budgetData = budgets.find((b: any) => b.programId == prog.programID);
+              return {
+                prog: prog,
+                isDraft: prog.status?.toUpperCase() === 'DRAFT',
+                budget: {
+                  spentAmount: budgetData?.spentAmount || 0,
+                  totalAmount: budgetData?.allocatedAmount || 0
+                },
+                analytics: analytics[prog.programID] || { totalApplications: 0, acceptanceRate: 0 }
+              };
+            });
+            console.log('Mapped Program Data:', mapped);
+            return of(mapped);
+          })
+        );
       })
     ).subscribe({
-      next: (mappedData: any[]) => {
-        console.log('3. Final Data assigned to allPrograms:', mappedData);
-        this.allPrograms = [...mappedData];
-      },
-      error: (err) => {
-        console.error('Fatal Stream Error:', err);
-        this.allPrograms = [];
+      next: (mappedData: any) => {
+        this.allPrograms = mappedData;
+        this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }

@@ -4,6 +4,7 @@ import { Chart, registerables } from 'chart.js';
 import { RouterLink } from '@angular/router';
 import { ProgramService } from '../service/program.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { Program } from '../model/program.model';
 
 Chart.register(...registerables);
 
@@ -18,7 +19,8 @@ export class ProgramCardComponent implements AfterViewInit {
   @Input() data: any; 
   @Input() index: number = 0;
   @Input() isDraft: boolean = false;
-
+  @Input() viewMode: 'manager' | 'researcher' = 'manager';
+  
   @ViewChild('analyticsChart') chartCanvas!: ElementRef<HTMLCanvasElement>;
 
   isExpanded: boolean = false;
@@ -32,7 +34,7 @@ export class ProgramCardComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit() {
-    if (!this.isDraft && this.data?.analytics?.monthlyStats?.labels?.length > 0) {
+    if (this.viewMode === 'manager' && !this.isDraft && this.data?.analytics?.monthlyStats?.labels?.length > 0) {
       this.initChart();
     }
   }
