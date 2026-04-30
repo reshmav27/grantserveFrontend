@@ -29,7 +29,7 @@ export class ApplicationsService {
     params = params.set('title', searchTerm);
   }
 
-  return this.Http.get(`${environment.BASE_URL}/application-service/GrantApplication/search`, { params });
+  return this.Http.get(`${environment.BASE_URL}/application-service/GrantApplication/search/${this.userId}`, { params });
 }
     
   
