@@ -3,4 +3,5 @@ export interface UserResponseDto {
   statusCode: number;
   message: string;
   role: string;
+  userid: number;
 }

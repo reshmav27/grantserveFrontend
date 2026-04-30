@@ -10,6 +10,8 @@ export class ApplicationsService {
    readonly userId: Number | null;
    readonly baseUrl: string;
   constructor(private Http :HttpClient, private JwtService: JwtService){
+    const user = this.JwtService.getUserId();
+    console.log('Fetching applications for User ID:', user);
     this.userId = this.JwtService.getUserId();
     this.baseUrl = `${environment.BASE_URL}/application-service/GrantApplication/FetchGrantApplication/${this.userId}`;
   }
@@ -27,7 +29,7 @@ export class ApplicationsService {
     params = params.set('title', searchTerm);
   }
 
-  return this.Http.get(`${environment.BASE_URL}/application-service/GrantApplication/search`, { params });
+  return this.Http.get(`${environment.BASE_URL}/application-service/GrantApplication/search/${this.userId}`, { params });
 }
     
   
