@@ -25,7 +25,7 @@ export class ProgramCardComponent implements AfterViewInit {
 
   isExpanded: boolean = false;
   isTitleExpanded: boolean = false;
-  readonly DESC_LIMIT = 170;
+  readonly DESC_LIMIT = 100;
   readonly TITLE_LIMIT = 100;
 
   constructor(

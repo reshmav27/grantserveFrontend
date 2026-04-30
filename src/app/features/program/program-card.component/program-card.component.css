@@ -24,3 +24,17 @@
   cursor: not-allowed;
   pointer-events: auto;
 }
+
+.laptop-border-only, .border-right {
+  border-left: none;
+}
+
+/* Apply border for laptops/tablets and larger (min-width: 768px) */
+@media (min-width: 768px) {
+  .laptop-border-only {
+    border-left: 1px solid #dee2e6;
+  }
+  .border-right {
+    border-right: 1px solid #dee2e6;
+  }
+}
