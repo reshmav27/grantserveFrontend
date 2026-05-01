@@ -84,6 +84,13 @@ export const routes: Routes = [
         component: ReviewerDashboard,
         canActivate: [authGuard],
         data: { roles: ['REVIEWER'] } 
-    }
+    },
+    {
+  path: 'disbursements',
+  loadComponent: () => import('./features/disbursement/disbursement.component/disbursement.component')
+    .then(m => m.DisbursementComponent),
+  canActivate: [authGuard]
+}
+
 
 ];
