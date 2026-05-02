@@ -35,8 +35,8 @@ export class ManagerHeaderComponent {
   isOffcanvasOpen = false;
   navItems: NavItem[] = [
     { label: 'Programs', route: '/programs', icon: 'bi-grid' },
-    { label: 'Applications', route: '/applications', icon: 'bi-file-earmark-text' },
-    { label: 'Disbursements', route: '/disbursements', icon: 'bi-cash-stack' },
+    { label: 'Applications', route: '/application', icon: 'bi-file-earmark-text' },
+    { label: 'Disbursements', route: '/manager/disbursements', icon: 'bi-cash-stack' },
     { label: 'Compliance', route: '/compliance', icon: 'bi-shield-check' }
   ];
 

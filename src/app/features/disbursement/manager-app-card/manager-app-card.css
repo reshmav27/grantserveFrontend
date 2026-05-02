@@ -1,0 +1,100 @@
+.app-card {
+  background: white;
+  border-radius: 12px;
+  padding: 22px;
+  border: 1px solid #E2E8F0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.app-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+  transform: translateY(-2px);
+}
+
+.disb-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 50px;
+  text-transform: uppercase;
+  display: inline-block;
+  width: fit-content;
+  margin-bottom: 12px;
+}
+
+.badge-idle     { background: #F1F5F9; color: #475569; }
+.badge-initiated { background: #FEF3C7; color: #92400E; }
+.badge-completed { background: #DCFCE7; color: #15803D; }
+
+.app-id-tag {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: #64748B;
+}
+
+.disb-id-box {
+  font-family: monospace;
+  font-size: 0.75rem;
+  background: #F8FAFC;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid #E2E8F0;
+  color: #475569;
+}
+
+.btn-action {
+  width: 100%;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  margin-top: auto;
+  transition: opacity 0.2s;
+}
+
+.btn-action:hover { opacity: 0.88; }
+
+.btn-initiate { background: #0026B2; color: white; }
+.btn-process  { background: #059669; color: white; }
+
+.completed-history {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.completed-entry {
+  background: #F8FAFC;
+  border-radius: 8px;
+  padding: 8px 10px;
+  border: 1px solid #E2E8F0;
+}
+
+.btn-delete {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid #FEE2E2;
+  background: #FEF2F2;
+  color: #EF4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 0.8rem;
+}
+
+.btn-delete:hover {
+  background: #EF4444;
+  color: white;
+}

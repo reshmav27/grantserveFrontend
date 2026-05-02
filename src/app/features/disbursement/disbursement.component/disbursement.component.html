@@ -12,18 +12,18 @@
 
         <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-2 rounded-3 shadow-sm border border-light-subtle">
           <div class="d-flex gap-2 p-1">
-          @for (status of ['All', 'Pending', 'Initiated', 'Completed']; track status) {
-            <button
-              (click)="filterBy(status)"
-              [class]="currentFilter === status ? 'btn btn-primary rounded-pill px-3' : 'btn btn-light text-muted rounded-pill px-3 border-0'">
-              {{ status }}
-              <span class="ms-1 badge rounded-circle bg-white text-dark opacity-75" style="font-size: 0.7rem;">
-                {{ status === 'All' ? statusCounts.All :
-                   status === 'Pending' ? statusCounts.Pending :
-                   status === 'Initiated' ? statusCounts.Initiated : statusCounts.Completed }}
-              </span>
-            </button>
-          }
+            @for (status of ['All', 'Pending', 'Initiated', 'Completed']; track status) {
+              <button
+                (click)="filterBy(status)"
+                [class]="currentFilter === status ? 'btn btn-primary rounded-pill px-3' : 'btn btn-light text-muted rounded-pill px-3 border-0'">
+                {{ status }}
+                <span class="ms-1 badge rounded-circle bg-white text-dark opacity-75" style="font-size: 0.7rem;">
+                  {{ status === 'All' ? statusCounts.All :
+                     status === 'Pending' ? statusCounts.Pending :
+                     status === 'Initiated' ? statusCounts.Initiated : statusCounts.Completed }}
+                </span>
+              </button>
+            }
           </div>
 
           <div class="input-group w-25 px-2">
@@ -79,8 +79,6 @@
         </button>
 
         <div class="bg-white rounded-4 p-4 shadow-sm border">
-
-          <!-- Header -->
           <div class="d-flex justify-content-between align-items-start mb-4 pb-3 border-bottom">
             <div>
               <p class="text-muted small mb-1">
@@ -117,45 +115,34 @@
           }
 
           <div class="row g-4">
-            <!-- Info boxes -->
             <div class="col-md-8">
               <div class="row g-3">
                 <div class="col-sm-6">
                   <div class="p-3 rounded-3 bg-light border h-100">
-                    <p class="small fw-bold text-muted text-uppercase mb-2">
-                      <i class="bi bi-credit-card me-1"></i>Payment Method
-                    </p>
+                    <p class="small fw-bold text-muted text-uppercase mb-2"><i class="bi bi-credit-card me-1"></i>Payment Method</p>
                     <p class="mb-0 fw-bold text-dark">{{ selected.payment?.paymentMethod ?? '--' }}</p>
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <div class="p-3 rounded-3 bg-light border h-100">
-                    <p class="small fw-bold text-muted text-uppercase mb-2">
-                      <i class="bi bi-check-circle me-1"></i>Payment Status
-                    </p>
+                    <p class="small fw-bold text-muted text-uppercase mb-2"><i class="bi bi-check-circle me-1"></i>Payment Status</p>
                     <p class="mb-0 fw-bold text-dark">{{ selected.payment?.paymentStatus ?? '--' }}</p>
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <div class="p-3 rounded-3 bg-light border h-100">
-                    <p class="small fw-bold text-muted text-uppercase mb-2">
-                      <i class="bi bi-calendar-event me-1"></i>{{ dateLabel }}
-                    </p>
+                    <p class="small fw-bold text-muted text-uppercase mb-2"><i class="bi bi-calendar-event me-1"></i>{{ dateLabel }}</p>
                     <p class="mb-0 fw-bold text-dark">{{ dateValue }}</p>
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <div class="p-3 rounded-3 bg-light border h-100">
-                    <p class="small fw-bold text-muted text-uppercase mb-2">
-                      <i class="bi bi-file-earmark-check me-1"></i>Application Status
-                    </p>
+                    <p class="small fw-bold text-muted text-uppercase mb-2"><i class="bi bi-file-earmark-check me-1"></i>Application Status</p>
                     <p class="mb-0 fw-bold text-dark">{{ selected.applicationStatus }}</p>
                   </div>
                 </div>
               </div>
             </div>
-
-            <!-- Amount box -->
             <div class="col-md-4">
               <div class="p-4 rounded-3 border text-center h-100 d-flex flex-column justify-content-center"
                    style="border-style: dashed !important; background: #fafbff;">
