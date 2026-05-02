@@ -1,0 +1,57 @@
+<div class="app-card">
+
+  <!-- Delete button — only when active (INITIATED) disbursement exists -->
+  @if (data.disbursementID && data.disbursementStatus === 'PROCESSING') {
+    <button class="btn-delete" (click)="delete.emit(data)" title="Delete Disbursement">
+      <i class="bi bi-trash3-fill"></i>
+    </button>
+  }
+
+  <!-- Status Badge -->
+  <span class="disb-badge" [ngClass]="badgeClass">{{ status }}</span>
+
+  <!-- App ID + Title -->
+  <div class="mb-3 pe-2">
+    <span class="app-id-tag">{{ formattedId }}</span>
+    <h5 class="fw-bold mt-1 mb-0">{{ data.title }}</h5>
+  </div>
+
+  <!-- APPROVED: Initiate button -->
+  @if (status === 'APPROVED') {
+    <button class="btn-action btn-initiate" (click)="initiate.emit(data)">
+      <i class="bi bi-send me-2"></i>Initiate Disbursement
+    </button>
+  }
+
+  <!-- INITIATED: DSB ID + amount + Process button -->
+  @if (status === 'INITIATED') {
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <span class="disb-id-box">ID: DSB-{{ data.disbursementID }}</span>
+      <span class="fw-bold text-primary">{{ data.disbursementAmount | currency:'INR':'symbol':'1.0-0' }}</span>
+    </div>
+    <button class="btn-action btn-process" (click)="process.emit(data)">
+      <i class="bi bi-check-circle me-2"></i>Process Payment
+    </button>
+  }
+
+  <!-- COMPLETED: payment history -->
+  @if (status === 'COMPLETED') {
+    @if (data.completedDisbursements && data.completedDisbursements.length > 0) {
+      <div class="completed-history mt-2">
+        @for (d of data.completedDisbursements; track d.disbursementID) {
+          <div class="completed-entry">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="small fw-bold text-success">
+                <i class="bi bi-check-circle-fill me-1"></i>
+                {{ d.amount | currency:'INR':'symbol':'1.0-0' }}
+              </span>
+              <span class="small text-muted">{{ d.payment?.date ?? '--' }}</span>
+            </div>
+            <span class="disb-id-box mt-1 d-inline-block">Ref: DSB-{{ d.disbursementID }} · {{ d.payment?.method ?? '--' }}</span>
+          </div>
+        }
+      </div>
+    }
+  }
+
+</div>

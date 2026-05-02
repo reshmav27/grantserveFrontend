@@ -90,6 +90,13 @@ export const routes: Routes = [
   loadComponent: () => import('./features/disbursement/disbursement.component/disbursement.component')
     .then(m => m.DisbursementComponent),
   canActivate: [authGuard]
+},
+    {
+  path: 'manager/disbursements',
+  loadComponent: () => import('./features/disbursement/manager-disbursement.component/manager-disbursement.component')
+    .then(m => m.ManagerDisbursementComponent),
+  canActivate: [authGuard],
+  data: { roles: ['MANAGER', 'ADMIN'] }
 }
 
 
