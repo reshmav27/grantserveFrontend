@@ -1,12 +1,5 @@
 <div class="app-card">
 
-  <!-- Delete button — only when active (INITIATED) disbursement exists -->
-  @if (data.disbursementID && data.disbursementStatus === 'PROCESSING') {
-    <button class="btn-delete" (click)="delete.emit(data)" title="Delete Disbursement">
-      <i class="bi bi-trash3-fill"></i>
-    </button>
-  }
-
   <!-- Status Badge -->
   <span class="disb-badge" [ngClass]="badgeClass">{{ status }}</span>
 

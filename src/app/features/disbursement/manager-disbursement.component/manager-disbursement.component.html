@@ -100,7 +100,7 @@
     <!-- Applications Cards -->
     <h5 class="fw-bold mb-3">Project Applications</h5>
     <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
-      @for (app of applications; track app.applicationID) {
+      @for (app of applications; track app.applicationID + '_' + (app.disbursementStatus ?? 'NONE') + '_' + (app.disbursementID ?? 0)) {
         <div class="col">
           <app-manager-app-card
             [data]="app"
@@ -144,7 +144,7 @@
       </div>
       <div class="mb-4">
         <label class="form-label fw-bold">Disbursement Amount (₹)</label>
-        <input type="number" class="form-control form-control-lg" placeholder="0.00" [(ngModel)]="initiateAmount">
+        <input type="text" class="form-control form-control-lg" placeholder="Enter amount" [(ngModel)]="initiateAmount">
       </div>
       <button class="btn btn-dark w-100 py-2 fw-bold rounded-pill" (click)="confirmInitiate()" [disabled]="isSubmitting">
         {{ isSubmitting ? 'Processing...' : 'Initiate Disbursement' }}

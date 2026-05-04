@@ -31,12 +31,12 @@ export class ManagerDisbursementService {
     );
   }
 
-  initiateDisbursement(payload: InitiateRequest): Observable<any> {
-    return this.http.post(`${this.base}/disbursement-service/disbursements/initiate`, payload);
+  initiateDisbursement(payload: InitiateRequest): Observable<string> {
+    return this.http.post(`${this.base}/disbursement-service/disbursements/initiate`, payload, { responseType: 'text' });
   }
 
-  processPayment(payload: ProcessPaymentRequest): Observable<any> {
-    return this.http.post(`${this.base}/disbursement-service/payments/process`, payload);
+  processPayment(payload: ProcessPaymentRequest): Observable<string> {
+    return this.http.post(`${this.base}/disbursement-service/payments/process`, payload, { responseType: 'text' });
   }
 
   deleteDisbursement(disbursementId: number): Observable<any> {
