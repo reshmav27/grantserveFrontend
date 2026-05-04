@@ -20,6 +20,10 @@ import { FilterCriteria } from '../../../shared/components/navigation/manager-he
 export class ProgramComponent implements OnInit {
   allPrograms: any[] = [];
   isLoading: boolean = true;
+  
+  currentPage: number = 0;
+  totalPages: number = 0;
+  pageSize: number = 10;
 
   currentCriteria: FilterCriteria = {
     title: '',
@@ -35,15 +39,23 @@ export class ProgramComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadPrograms(this.currentCriteria);
+    this.loadPrograms(this.currentCriteria, 0);
   }
 
   onFilterChange(criteria: FilterCriteria): void {
     this.currentCriteria = criteria;
-    this.loadPrograms(criteria);
+    this.loadPrograms(criteria, 0);
   }
 
-  loadPrograms(criteria: FilterCriteria): void {
+  goToPage(page: number): void {
+    if (page >= 0 && page < this.totalPages) {
+      this.loadPrograms(this.currentCriteria, page);
+      // Scroll to top of results
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  loadPrograms(criteria: FilterCriteria, page: number): void {
     this.isLoading = true;
     
     this.programService.searchPrograms(
@@ -52,8 +64,8 @@ export class ProgramComponent implements OnInit {
       criteria.status,
       criteria.startDate,
       criteria.endDate,
-      0, 
-      10,
+      page,
+      this.pageSize,
       criteria.sortBy,
       criteria.direction
     ).pipe(
@@ -75,6 +87,9 @@ export class ProgramComponent implements OnInit {
           analytics: this.dataService.getBulkAnalytics(ids)
         }).pipe(
           switchMap(({ list, budgets, analytics }) => {
+            this.currentPage = response.page?.number || 0;
+            this.totalPages = response.page?.totalPages || 0;
+
             const mapped = list.map((prog: any) => {
               const budgetData = budgets.find((b: any) => b.programId == prog.programID);
               return {

@@ -1,0 +1,110 @@
+.nav-tab-btn {
+  position: relative;
+  background: none;
+  border: none;
+  padding: 10px 4px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #6c757d; /* Muted text for inactive tabs */
+  transition: color 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.nav-tab-btn:hover {
+  color: #0d6efd; /* Primary color on hover */
+}
+
+.nav-tab-btn.active {
+  color: #0d6efd; /* Primary color when active */
+}
+
+/* The blue bar under the active tab */
+.active-indicator {
+  position: absolute;
+  bottom: -1px; /* Sits exactly on the container's border */
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: transparent;
+  border-radius: 3px 3px 0 0;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.nav-tab-btn.active .active-indicator {
+  background-color: #0d6efd;
+}
+
+/* Laptop View: Custom navigation link styling */
+.custom-nav-link {
+  font-weight: 500;
+  color: #6c757d !important;
+  padding: 0.5rem 1rem !important;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+}
+
+.custom-nav-link:hover {
+  color: #0d6efd !important;
+  background-color: #f8f9fa;
+}
+
+.custom-nav-link.active {
+  color: #0d6efd !important;
+  font-weight: 700;
+  position: relative;
+}
+
+@media (min-width: 992px) {
+  .custom-nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    width: 60%;
+    height: 3px;
+    background: #0d6efd;
+    border-radius: 10px;
+  }
+}
+
+/* Offcanvas: Smooth Slide Animation Logic */
+.offcanvas-end {
+  top: 0;
+  right: 0;
+  width: 280px;
+  transform: translateX(100%); 
+  transition: transform 0.3s ease-in-out, visibility 0.3s ease-in-out;
+  visibility: hidden;
+  display: block; 
+  z-index: 1050;
+  background-color: white;
+  box-shadow: -5px 0 15px rgba(0,0,0,0.05);
+}
+
+.offcanvas-end.show {
+  transform: translateX(0);
+  visibility: visible;
+}
+
+.custom-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1040;
+  opacity: 0;
+  transition: opacity 0.3s linear;
+  pointer-events: none;
+}
+
+.custom-backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.logout-link:hover {
+  background-color: #fff5f5;
+  border-radius: 6px;
+}

@@ -6,6 +6,7 @@ import { ProgramFormComponent } from './features/program/program-form.component/
 import { AddBudgetComponent } from './features/program/add-budget.component/add-budget.component';
 import { ReviewerDashboard } from './features/review/reviewer-dashboard/reviewer-dashboard.component';
 import { ProgramListComponent } from './features/Applications/program-list.component/program-list.component';
+import { ViewProgramComponent } from './features/program/view-program.component/view-program.component';
 
 export const routes: Routes = [
     { path: '', component: Login },
@@ -43,6 +44,12 @@ export const routes: Routes = [
         data: { roles: ['MANAGER', 'ADMIN'] }
     },
     {
+        path: 'programs/:id',
+        component: ViewProgramComponent,
+        canActivate: [authGuard],
+        data: { roles: ['MANAGER', 'ADMIN', 'RESEARCHER'] }
+    },
+    {
         path: 'program/new',
         component: ProgramFormComponent,
         canActivate: [authGuard],
@@ -77,6 +84,20 @@ export const routes: Routes = [
         component: ReviewerDashboard,
         canActivate: [authGuard],
         data: { roles: ['REVIEWER'] } 
-    }
+    },
+    {
+  path: 'disbursements',
+  loadComponent: () => import('./features/disbursement/disbursement.component/disbursement.component')
+    .then(m => m.DisbursementComponent),
+  canActivate: [authGuard]
+},
+    {
+  path: 'manager/disbursements',
+  loadComponent: () => import('./features/disbursement/manager-disbursement.component/manager-disbursement.component')
+    .then(m => m.ManagerDisbursementComponent),
+  canActivate: [authGuard],
+  data: { roles: ['MANAGER', 'ADMIN'] }
+}
+
 
 ];

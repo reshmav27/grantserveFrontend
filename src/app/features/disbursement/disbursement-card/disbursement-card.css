@@ -1,0 +1,12 @@
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.09) !important;
+}
+
+.status-pending   { background-color: #e0e7ff !important; color: #4338ca !important; }
+.status-processing { background-color: #fef3c7 !important; color: #92400e !important; }
+.status-completed  { background-color: #d1fae5 !important; color: #065f46 !important; }

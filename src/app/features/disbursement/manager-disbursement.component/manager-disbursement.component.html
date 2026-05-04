@@ -1,0 +1,181 @@
+<div class="d-flex flex-column min-vh-100">
+<app-manager-header [showSubHeader]="false"></app-manager-header>
+
+<div class="flex-grow-1">
+<div class="container-fluid px-4 py-4" style="max-width: 1300px; margin: 0 auto;">
+
+  <!-- PROGRAM LIST VIEW -->
+  @if (!selectedProgram) {
+    <div class="mb-4">
+      <h3 class="fw-bold mb-1">Disbursement Management</h3>
+      <p class="text-muted small">Select a program to manage disbursements.</p>
+    </div>
+
+    <div class="row g-4">
+      @for (prog of programs; track prog.programID) {
+        <div class="col-md-6">
+          <div class="card border-0 shadow-sm p-4 h-100 prog-card" (click)="openProgram(prog)">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <h5 class="fw-bold mb-0">{{ prog.title }}</h5>
+              <span class="badge rounded-pill px-3 py-2"
+                [ngClass]="prog.status === 'ACTIVE' ? 'bg-success-subtle text-success' : 'bg-primary-subtle text-primary'">
+                {{ prog.status }}
+              </span>
+            </div>
+            <p class="text-muted small flex-grow-1 mb-3">{{ prog.description }}</p>
+            <div class="border-top pt-3 d-flex justify-content-between small text-muted">
+              <span><i class="bi bi-calendar3 me-1"></i>{{ prog.startDate }} → {{ prog.endDate }}</span>
+              <span class="fw-bold text-dark">{{ prog.budget | currency:'INR':'symbol':'1.0-0' }}</span>
+            </div>
+          </div>
+        </div>
+      }
+      @empty {
+        <div class="col-12 text-center py-5">
+          <i class="bi bi-folder-x text-secondary opacity-25" style="font-size:4rem;"></i>
+          <h5 class="mt-3 text-muted">No active programs found.</h5>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- PROGRAM DETAIL VIEW -->
+  @if (selectedProgram) {
+    <div class="mb-4">
+      <button class="btn btn-link p-0 text-decoration-none fw-bold text-primary mb-2" (click)="goBack()">
+        <i class="bi bi-arrow-left me-1"></i> All Programs
+      </button>
+      <h2 class="fw-bold mb-0">{{ selectedProgram.title }}</h2>
+      <p class="text-muted small mb-0">Program ID: {{ selectedProgram.programID }}</p>
+    </div>
+
+    <!-- Budget Stats -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-white rounded-3 border shadow-sm d-flex align-items-center gap-3">
+          <div class="rounded-3 p-2 bg-primary bg-opacity-10 text-primary flex-shrink-0">
+            <i class="bi bi-bank fs-5"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="small fw-bold text-muted text-uppercase mb-0">Allocation</p>
+            <h6 class="fw-bold mb-0 text-truncate">{{ (budget?.allocatedAmount ?? 0) | currency:'INR':'symbol':'1.0-0' }}</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-white rounded-3 border shadow-sm d-flex align-items-center gap-3">
+          <div class="rounded-3 p-2 bg-success bg-opacity-10 text-success flex-shrink-0">
+            <i class="bi bi-check-all fs-5"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="small fw-bold text-muted text-uppercase mb-0">Spent</p>
+            <h6 class="fw-bold mb-0 text-truncate">{{ (budget?.spentAmount ?? 0) | currency:'INR':'symbol':'1.0-0' }}</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-white rounded-3 border shadow-sm d-flex align-items-center gap-3">
+          <div class="rounded-3 p-2 bg-info bg-opacity-10 text-info flex-shrink-0">
+            <i class="bi bi-wallet2 fs-5"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="small fw-bold text-muted text-uppercase mb-0">Balance</p>
+            <h6 class="fw-bold mb-0 text-truncate">{{ (budget?.remainingAmount ?? 0) | currency:'INR':'symbol':'1.0-0' }}</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="p-3 bg-white rounded-3 border shadow-sm d-flex align-items-center gap-3">
+          <div class="rounded-3 p-2 bg-warning bg-opacity-10 text-warning flex-shrink-0">
+            <i class="bi bi-clock-history fs-5"></i>
+          </div>
+          <div>
+            <p class="small fw-bold text-muted text-uppercase mb-0">Pending</p>
+            <h6 class="fw-bold mb-0">{{ pendingCount }}</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Applications Cards -->
+    <h5 class="fw-bold mb-3">Project Applications</h5>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+      @for (app of applications; track app.applicationID) {
+        <div class="col">
+          <app-manager-app-card
+            [data]="app"
+            (initiate)="openInitModal($event)"
+            (process)="openProcModal($event)"
+            (delete)="deleteEntry($event)">
+          </app-manager-app-card>
+        </div>
+      }
+      @empty {
+        <div class="col-12 text-center py-5">
+          <i class="bi bi-folder-x text-secondary opacity-25" style="font-size:4rem;"></i>
+          <h5 class="mt-3 text-muted">No approved applications found for this program.</h5>
+        </div>
+      }
+    </div>
+  }
+</div>
+</div>
+
+</div>
+
+<!-- INITIATE MODAL -->
+@if (showInitModal) {
+  <div class="modal-backdrop-custom" (click)="showInitModal = false"></div>
+  <div class="modal-custom">
+    <div class="bg-white border-0 shadow rounded-4 p-4" style="width:460px;">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5 class="fw-bold mb-0">Initiate Fund Release</h5>
+        <button class="btn-close" (click)="showInitModal = false"></button>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-6">
+          <label class="form-label small fw-bold">App ID</label>
+          <input class="form-control bg-light" [value]="'APP-' + targetApp?.applicationID?.toString()?.padStart(3,'0')" readonly>
+        </div>
+        <div class="col-6">
+          <label class="form-label small fw-bold">Program ID</label>
+          <input class="form-control bg-light" [value]="selectedProgram?.programID" readonly>
+        </div>
+      </div>
+      <div class="mb-4">
+        <label class="form-label fw-bold">Disbursement Amount (₹)</label>
+        <input type="number" class="form-control form-control-lg" placeholder="0.00" [(ngModel)]="initiateAmount">
+      </div>
+      <button class="btn btn-dark w-100 py-2 fw-bold rounded-pill" (click)="confirmInitiate()" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Processing...' : 'Initiate Disbursement' }}
+      </button>
+    </div>
+  </div>
+}
+
+<!-- PROCESS PAYMENT MODAL -->
+@if (showProcModal) {
+  <div class="modal-backdrop-custom" (click)="showProcModal = false"></div>
+  <div class="modal-custom">
+    <div class="bg-white border-0 shadow rounded-4 p-4" style="width:460px;">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5 class="fw-bold mb-0">Process Payment</h5>
+        <button class="btn-close" (click)="showProcModal = false"></button>
+      </div>
+      <div class="mb-3">
+        <label class="form-label small fw-bold">Disbursement ID</label>
+        <input class="form-control bg-light fw-bold font-monospace" [value]="'DSB-' + targetApp?.disbursementID" readonly>
+      </div>
+      <div class="mb-4">
+        <label class="form-label fw-bold">Payment Channel</label>
+        <select class="form-select" [(ngModel)]="paymentMethod">
+          <option value="BANK">Bank Transfer (SWIFT)</option>
+          <option value="WALLET">Digital Wallet</option>
+        </select>
+      </div>
+      <button class="btn btn-success w-100 py-2 fw-bold rounded-pill" (click)="confirmPayment()" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Processing...' : 'Mark as Completed' }}
+      </button>
+    </div>
+  </div>
+}

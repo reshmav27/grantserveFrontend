@@ -12,6 +12,12 @@ export interface FilterCriteria {
   direction: string;
 }
 
+export interface NavItem {
+  label: string;
+  route: string;
+  icon?: string; // used in offcanvas
+}
+
 @Component({
   selector: 'app-manager-header',
   standalone: true,
@@ -25,6 +31,14 @@ export class ManagerHeaderComponent {
   @Input() title: string = 'All Programs';
 
   @Output() filterChange = new EventEmitter<FilterCriteria>(); // Updated Output
+
+  isOffcanvasOpen = false;
+  navItems: NavItem[] = [
+    { label: 'Programs', route: '/programs', icon: 'bi-grid' },
+    { label: 'Applications', route: '/application', icon: 'bi-file-earmark-text' },
+    { label: 'Disbursements', route: '/manager/disbursements', icon: 'bi-cash-stack' },
+    { label: 'Compliance', route: '/compliance', icon: 'bi-shield-check' }
+  ];
 
   // Internal State
   selectedStatus: string = 'ALL';
@@ -43,7 +57,7 @@ export class ManagerHeaderComponent {
     { label: 'Forecasted', value: 'FORECASTED' }
   ];
 
-  constructor(private location: Location, private router: Router) {}
+  constructor(private location: Location, private router: Router) { }
 
   applyFilters() {
     this.filterChange.emit({
@@ -65,7 +79,16 @@ export class ManagerHeaderComponent {
     this.showAdvancedFilters = !this.showAdvancedFilters;
   }
 
+  toggleOffcanvas() {
+    this.isOffcanvasOpen = !this.isOffcanvasOpen;
+  }
+
+  closeOffcanvas() {
+    this.isOffcanvasOpen = false;
+  }
+
   logout() {
+    this.closeOffcanvas();
     localStorage.removeItem('token');
     this.router.navigate(['/']);
   }
