@@ -110,12 +110,15 @@ export class ViewProgramComponent implements OnInit {
             totalAmount: budget?.allocatedAmount || 0,
             remainingAmount: budget?.remainingAmount || 0,
           },
-          analytics: (analytics && analytics[program.programID]) || {
+          analytics: {}
+        };
+        if (this.viewMode === 'manager') {
+          mapped.analytics = (analytics && analytics[program.programID]) || {
             totalApplications: 0,
             acceptanceRate: 0,
             monthlyStats: { labels: [], accepted: [], rejected: [], pending: [] }
-          },
-        };
+          }
+        }
 
         return of(mapped);
       })

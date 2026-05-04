@@ -95,6 +95,7 @@ export class ProgramService {
 
     // Only add params if they have values
     if (title) params = params.set('title', title);
+    if (id) params = params.set('id', id);
     if (status) params = params.set('status', status);
     if (startDate) params = params.set('start', startDate);
     if (endDate) params = params.set('end', endDate);

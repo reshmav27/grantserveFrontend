@@ -1,4 +1,5 @@
-<div [class.d-flex]="viewMode === 'researcher'" [class.min-vh-100]="viewMode === 'researcher'" [class.bg-light]="viewMode === 'researcher'">
+<div [class.d-flex]="viewMode === 'researcher'" [class.min-vh-100]="viewMode === 'researcher'"
+    [class.bg-light]="viewMode === 'researcher'">
     @if (viewMode === 'manager') {
     <app-manager-header [showSubHeader]="false" [isDashboard]="false"></app-manager-header>
     } @else {
@@ -40,9 +41,21 @@
 
                     <div class="d-flex gap-2 flex-column flex-sm-row w-100 w-lg-auto">
                         @if (viewMode === 'researcher') {
-                        <button class="btn btn-outline-primary rounded-pill px-4 flex-fill">
-                            Apply
+                        @if (programData?.program?.status === 'ACTIVE') {
+                        <button
+                            class="btn btn-primary rounded-pill px-4 flex-fill shadow-sm animate__animated animate__pulse">
+                            Apply Now
                         </button>
+                        } @else {
+                        <button class="btn btn-secondary rounded-pill px-4 flex-fill opacity-75"
+                            style="cursor: not-allowed; pointer-events: all;" disabled>
+                            @if (programData?.program?.status === 'CLOSED') {
+                            Applications Closed
+                            } @else {
+                            Applications not opened yet
+                            }
+                        </button>
+                        }
                         }
                         @if (viewMode === 'manager' && programData?.isDraft) {
                         <button class="btn btn-outline-primary rounded-pill px-4 flex-fill"
