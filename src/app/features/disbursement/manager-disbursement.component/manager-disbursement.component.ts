@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { forkJoin, of } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { catchError, switchMap, map } from 'rxjs/operators';
 import { ManagerDisbursementService } from '../service/manager-disbursement.service';
 import { BudgetDto, ManagerApplicationDto } from '../model/manager-disbursement.model';
 import { ProgramService } from '../../program/service/program.service';
@@ -62,7 +62,7 @@ export class ManagerDisbursementComponent implements OnInit {
           )
         );
         return forkJoin(requests).pipe(
-          switchMap(disbResults => of({ approved, disbResults }))
+          map(disbResults => ({ approved, disbResults }))
         );
       })
     ).subscribe({
@@ -86,12 +86,22 @@ export class ManagerDisbursementComponent implements OnInit {
         });
         this.cdr.detectChanges();
       },
-      error: () => { this.cdr.detectChanges(); }
+      error: (err) => { 
+        console.error('Error loading program data:', err);
+        this.cdr.detectChanges(); 
+      }
     });
 
     this.service.getBudgetByProgram(programId).subscribe({
-      next: (b) => { this.budget = b; this.cdr.detectChanges(); },
-      error: () => { this.budget = null; }
+      next: (b) => { 
+        this.budget = b; 
+        this.cdr.detectChanges(); 
+      },
+      error: (err) => { 
+        console.error('Error loading budget:', err);
+        this.budget = null;
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -118,19 +128,14 @@ export class ManagerDisbursementComponent implements OnInit {
       programID: programId,
       amount: amount
     }).subscribe({
-      next: (response: any) => {
-        this.showInitModal = false;
-        this.isSubmitting = false;
-        this.applications = this.applications.map(app => {
-          if (Number(app.applicationID) === appId) {
-            return { ...app, disbursementID: response?.disbursementID ?? -1, disbursementAmount: amount, disbursementStatus: 'PROCESSING' };
-          }
-          return app;
-        });
-        this.cdr.detectChanges();
-        this.loadProgramData(programId);
+      next: () => {
+        // Reload data and close modal after refresh completes
+        this.loadProgramDataAndCloseModal(programId, 'init');
       },
-      error: () => { this.isSubmitting = false; }
+      error: (err) => { 
+        console.error('Error initiating disbursement:', err);
+        this.isSubmitting = false;
+      }
     });
   }
 
@@ -144,31 +149,84 @@ export class ManagerDisbursementComponent implements OnInit {
     if (!this.targetApp?.disbursementID) return;
     this.isSubmitting = true;
     const programId = this.selectedProgram.programID;
-    const appId = Number(this.targetApp.applicationID);
     const disbId = this.targetApp.disbursementID;
     this.service.processPayment({
       disbursementID: disbId!,
       method: this.paymentMethod
     }).subscribe({
       next: () => {
-        this.showProcModal = false;
-        this.isSubmitting = false;
-        this.applications = (this.applications as any[]).map(app => {
-          if (Number(app.applicationID) === appId) {
-            const newEntry: any = { disbursementID: disbId, amount: app.disbursementAmount, status: 'COMPLETED', date: null, payment: { method: this.paymentMethod, date: null, paymentID: 0, status: 'SUCCESS' } };
-            return {
-              ...app,
-              disbursementID: undefined,
-              disbursementStatus: 'COMPLETED',
-              completedDisbursements: [...(app.completedDisbursements || []), newEntry]
-            };
-          }
-          return app;
-        }) as ManagerApplicationDto[];
-        this.cdr.detectChanges();
-        this.loadProgramData(programId);
+        // Reload data and close modal after refresh completes
+        this.loadProgramDataAndCloseModal(programId, 'proc');
       },
-      error: () => { this.isSubmitting = false; }
+      error: (err) => { 
+        console.error('Error processing payment:', err);
+        this.isSubmitting = false;
+      }
+    });
+  }
+
+  private loadProgramDataAndCloseModal(programId: number, modalType: 'init' | 'proc'): void {
+    // Close modal immediately to provide user feedback
+    if (modalType === 'init') {
+      this.showInitModal = false;
+    } else {
+      this.showProcModal = false;
+    }
+    
+    // Reload program data to refresh the UI
+    this.service.getApplicationsByProgram(programId).pipe(
+      switchMap((apps) => {
+        const approved = apps.filter(a => a.status === 'APPROVED');
+        if (approved.length === 0) return of({ approved: [], disbResults: [] });
+
+        const requests = approved.map(app =>
+          this.service.getDisbursementsByApplication(app.applicationID).pipe(
+            catchError(() => of([]))
+          )
+        );
+        return forkJoin(requests).pipe(
+          map(disbResults => ({ approved, disbResults }))
+        );
+      })
+    ).subscribe({
+      next: ({ approved, disbResults }: any) => {
+        this.applications = approved.map((app: any, i: number) => {
+          const disbs = disbResults[i] || [];
+          const active = disbs.find((d: any) => {
+            const s = d.status?.toUpperCase();
+            return s === 'PROCESSING' || s === 'INITIATED';
+          });
+          const completed = disbs.filter((d: any) => d.status?.toUpperCase() === 'COMPLETED');
+          const hasOnlyCompleted = !active && completed.length > 0;
+          return {
+            ...app,
+            disbursementID: active?.disbursementID ?? (hasOnlyCompleted ? completed[completed.length - 1].disbursementID : undefined),
+            disbursementAmount: active?.amount ?? undefined,
+            disbursementStatus: active ? 'PROCESSING' : (hasOnlyCompleted ? 'COMPLETED' : undefined),
+            payment: active?.payment ?? null,
+            completedDisbursements: completed
+          };
+        });
+        this.isSubmitting = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => { 
+        console.error('Error reloading program data:', err);
+        this.isSubmitting = false;
+        this.cdr.detectChanges();
+      }
+    });
+
+    this.service.getBudgetByProgram(programId).subscribe({
+      next: (b) => { 
+        this.budget = b; 
+        this.cdr.detectChanges(); 
+      },
+      error: (err) => { 
+        console.error('Error reloading budget:', err);
+        this.budget = null;
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -182,7 +240,7 @@ export class ManagerDisbursementComponent implements OnInit {
     const programId = this.selectedProgram.programID;
     this.service.deleteDisbursement(app.disbursementID).subscribe({
       next: () => this.loadProgramData(programId),
-      error: (err) => console.error('Delete failed', err)
+      error: (err) => console.error('Delete failed', String(err?.status ?? err?.message ?? 'Unknown error'))
     });
   }
 }
