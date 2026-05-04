@@ -1,0 +1,86 @@
+<div class="p-8 bg-slate-50 min-h-screen" *ngIf="profile; else loading">
+  
+  <div class="flex justify-between items-center mb-8 bg-white p-6 rounded-2xl border shadow-sm">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800">Welcome, {{profile.name}}</h1>
+      <span class="px-3 py-1 rounded-full text-xs font-bold mt-2 inline-block"
+            [ngClass]="canApply() ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'">
+        {{ profile.status }}
+      </span>
+    </div>
+    <button (click)="isEditing = !isEditing" class="px-6 py-2 bg-blue-600 text-white rounded-lg">
+      {{ isEditing ? 'Cancel' : 'Edit Details' }}
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 bg-white p-8 rounded-2xl border shadow-sm">
+      <h2 class="text-lg font-bold mb-6">Professional Information</h2>
+      <div class="grid grid-cols-2 gap-6">
+        <div>
+          <label class="text-xs font-bold text-slate-400 uppercase">Institution</label>
+          <input *ngIf="isEditing" [(ngModel)]="profile.institution" class="w-full mt-1 p-2 border rounded">
+          <p *ngIf="!isEditing" class="font-medium text-slate-800">{{profile.institution || 'Not Provided'}}</p>
+        </div>
+        <div>
+          <label class="text-xs font-bold text-slate-400 uppercase">Department</label>
+          <input *ngIf="isEditing" [(ngModel)]="profile.department" class="w-full mt-1 p-2 border rounded">
+          <p *ngIf="!isEditing" class="font-medium text-slate-800">{{profile.department || 'Not Provided'}}</p>
+        </div>
+      </div>
+      <button *ngIf="isEditing" (click)="onSave()" class="mt-8 w-full py-3 bg-green-600 text-white rounded-xl font-bold">
+        Save Profile
+      </button>
+    </div>
+
+    <div class="bg-white p-8 rounded-2xl border shadow-sm flex flex-col items-center">
+      <h3 class="text-slate-400 font-bold text-xs uppercase mb-4">Grant Access</h3>
+      <button [disabled]="!canApply()" 
+              [ngClass]="canApply() ? 'bg-blue-600' : 'bg-slate-300'"
+              class="w-full py-4 text-white rounded-xl font-bold transition-all">
+        Apply for New Grant
+      </button>
+      <p class="text-[10px] mt-2 text-center" *ngIf="!canApply()">
+        Wait for Compliance Officer to Verify your documents.
+      </p>
+    </div>
+
+    <div class="lg:col-span-3 bg-white rounded-2xl border shadow-sm overflow-hidden">
+      <div class="p-6 border-b flex justify-between items-center bg-slate-50">
+        <h2 class="font-bold text-slate-800">Document Vault</h2>
+        <button class="text-blue-600 font-bold text-sm">+ Upload New</button>
+      </div>
+      <table class="w-full text-left">
+        <thead class="bg-white text-slate-400 text-[10px] uppercase font-bold border-b">
+          <tr>
+            <th class="p-5">Type</th>
+            <th class="p-5">File</th>
+            <th class="p-5">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y">
+          <tr *ngFor="let doc of documents">
+            <td class="p-5 text-sm font-medium">{{doc.documentType}}</td>
+            <td class="p-5 text-sm text-slate-500">{{doc.fileName}}</td>
+            <td class="p-5">
+              <span [ngClass]="doc.verificationStatus === 'Verified' ? 'text-green-600' : 'text-amber-500'" class="font-bold text-xs">
+                {{doc.verificationStatus}}
+              </span>
+            </td>
+          </tr>
+          <tr *ngIf="documents.length === 0">
+            <td colspan="3" class="p-5 text-center text-slate-400 italic">No documents uploaded.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="flex flex-col items-center justify-center min-h-screen bg-slate-50">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+    <p class="text-slate-600 font-bold">Connecting to Researcher Service...</p>
+    <p class="text-xs text-slate-400 mt-2">Checking Database for User ID...</p>
+  </div>
+</ng-template>
