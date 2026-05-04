@@ -7,9 +7,13 @@ import { AddBudgetComponent } from './features/program/add-budget.component/add-
 import { ReviewerDashboard } from './features/review/reviewer-dashboard/reviewer-dashboard.component';
 import { ProgramListComponent } from './features/Applications/program-list.component/program-list.component';
 import { ViewProgramComponent } from './features/program/view-program.component/view-program.component';
+import { ResearcherDashboardComponent } from './features/researcher/researcher-dashboard/researcher-dashboard.component';
 
 export const routes: Routes = [
-    { path: '', component: Login },
+    {
+        path: '',
+        component: Login
+    },
     {
         path: 'home',
         canActivate: [authGuard],
@@ -19,6 +23,11 @@ export const routes: Routes = [
         path: 'home/programs',
         canActivate: [authGuard],
         component: ProgramListComponent
+    },
+    {
+        path: 'home/profile',
+        canActivate: [authGuard],
+        component: ResearcherDashboardComponent
     },
     {
         path: 'profile',
@@ -83,21 +92,20 @@ export const routes: Routes = [
         path: 'reviewer-dashboard',
         component: ReviewerDashboard,
         canActivate: [authGuard],
-        data: { roles: ['REVIEWER'] } 
+        data: { roles: ['REVIEWER'] }
     },
     {
-  path: 'disbursements',
-  loadComponent: () => import('./features/disbursement/disbursement.component/disbursement.component')
-    .then(m => m.DisbursementComponent),
-  canActivate: [authGuard]
-},
+        path: 'disbursements',
+        loadComponent: () => import('./features/disbursement/disbursement.component/disbursement.component')
+            .then(m => m.DisbursementComponent),
+        canActivate: [authGuard]
+    },
     {
-  path: 'manager/disbursements',
-  loadComponent: () => import('./features/disbursement/manager-disbursement.component/manager-disbursement.component')
-    .then(m => m.ManagerDisbursementComponent),
-  canActivate: [authGuard],
-  data: { roles: ['MANAGER', 'ADMIN'] }
-}
-
+        path: 'manager/disbursements',
+        loadComponent: () => import('./features/disbursement/manager-disbursement.component/manager-disbursement.component')
+            .then(m => m.ManagerDisbursementComponent),
+        canActivate: [authGuard],
+        data: { roles: ['MANAGER', 'ADMIN'] }
+    }
 
 ];
