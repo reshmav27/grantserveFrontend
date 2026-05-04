@@ -21,6 +21,11 @@ export const routes: Routes = [
         component: ProgramListComponent
     },
     {
+        path: 'home/programs/:id',
+        canActivate: [authGuard],
+        component: ViewProgramComponent
+    },
+    {
         path: 'profile',
         canActivate: [authGuard],
         loadComponent: () => import('./features/user-profile/user-profile.component/user-profile.component').then(m => m.UserProfileComponent)
@@ -49,18 +54,18 @@ export const routes: Routes = [
         canActivate: [authGuard],
         data: { roles: ['MANAGER', 'ADMIN', 'RESEARCHER'] }
     },
-    {
-        path: 'program/new',
-        component: ProgramFormComponent,
-        canActivate: [authGuard],
-        data: { roles: ['MANAGER', 'ADMIN'] }
-    },
-    {
-        path: 'program/edit/:id',
-        component: ProgramFormComponent,
-        canActivate: [authGuard],
-        data: { roles: ['MANAGER', 'ADMIN'] }
-    },
+    // {
+    //     path: 'program/new',
+    //     component: ProgramFormComponent,
+    //     canActivate: [authGuard],
+    //     data: { roles: ['MANAGER', 'ADMIN'] }
+    // },
+    // {
+    //     path: 'program/edit/:id',
+    //     component: ProgramFormComponent,
+    //     canActivate: [authGuard],
+    //     data: { roles: ['MANAGER', 'ADMIN'] }
+    // },
     {
         path: 'programs/create',
         component: ProgramFormComponent,

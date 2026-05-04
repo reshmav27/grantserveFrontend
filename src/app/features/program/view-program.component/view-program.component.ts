@@ -8,19 +8,20 @@ import { ProgramDataService } from '../service/program-data.service';
 import { forkJoin, of, switchMap } from 'rxjs';
 import { PagedResponse } from '../model/paged-model';
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Sidebar } from '../../../shared/components/sidebar/sidebar';
 
 Chart.register(ArcElement, Tooltip, Legend);
 
 @Component({
   selector: 'app-view-program',
   standalone: true,
-  imports: [CommonModule, RouterModule, ManagerHeaderComponent],
+  imports: [CommonModule, RouterModule, ManagerHeaderComponent, Sidebar],
   templateUrl: './view-program.component.html',
   styleUrls: ['./view-program.component.css'],
 })
 export class ViewProgramComponent implements OnInit {
   programData: any;
-  viewMode: 'manager' | 'researcher' = 'manager'; // This could come from an Auth service
+  viewMode: 'manager' | 'researcher' = 'researcher'; // This could come from an Auth service
 
   @ViewChild('analyticsChart') chartCanvas!: ElementRef<HTMLCanvasElement>;
   chart: any;
@@ -38,7 +39,13 @@ export class ViewProgramComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // 1. Get the ID from the URL
+    // 1. Get role from local storage
+    const storedRole = localStorage.getItem('userRole')?.toLowerCase();
+
+    // 2. Set viewMode (defaulting to researcher if not found)
+    this.viewMode = storedRole === 'manager' ? 'manager' : 'researcher';
+
+    // 3. Get the ID from the URL
     const id = this.route.snapshot.paramMap.get('id');
 
     // 2. Fetch data
@@ -46,12 +53,6 @@ export class ViewProgramComponent implements OnInit {
       this.loadProgramData(id);
     }
   }
-
-  // ngAfterViewInit() {
-  //   if (this.viewMode === 'manager' && !this.programData?.isDraft && this.programData?.analytics?.monthlyStats?.labels?.length > 0) {
-  //     this.initChart();
-  //   }
-  // }
 
   toggleDescription() {
     this.isDescriptionExpanded = !this.isDescriptionExpanded;
@@ -66,57 +67,78 @@ export class ViewProgramComponent implements OnInit {
   }
 
   private loadProgramData(id: string): void {
-    // 1. Ensure the observable is typed as a Page/any or array based on your latest service
-    this.programService
-      .searchPrograms(undefined, Number(id))
-      .pipe(
-        switchMap((respones: PagedResponse<any>) => {
-          const content = respones.content || [];
-          if (content.length === 0) return of([]);
+    this.isLoading = true;
 
-          const id = content.map((p: any) => Number(p.programID));
+    // 1. Determine which stream to use based on role
+    const programRequest$ = this.viewMode === 'manager'
+      ? this.programService.searchPrograms(undefined, Number(id))
+      : this.programService.searchProgramsForResearcher(undefined, Number(id));
 
-          return forkJoin({
-            program: content,
-            budget: this.dataService.getBudgetByBudgetId(id[0]),
-            analytics: this.dataService.getBulkAnalytics(id),
-          }).pipe(
-            switchMap(({ program, budget, analytics }) => {
-              const mapped = {
-                program: program,
-                isDraft: program.status?.toUpperCase() === 'DRAFT',
-                budget: {
-                  spentAmount: budget?.spentAmount || 0,
-                  totalAmount: budget?.allocatedAmount || 0,
-                  remainingAmount: budget?.remainingAmount || 0,
-                },
-                analytics: analytics[program.programID] || {
-                  totalApplications: 0,
-                  acceptanceRate: 0,
-                },
-              };
-              console.log('Mapped Program Data:', mapped);
-              return of(mapped);
-            }),
-          );
-        }),
-      )
-      .subscribe({
-        next: (mappedData: any) => {
-          this.programData = mappedData;
-          this.isLoading = false;
+    programRequest$.pipe(
+      switchMap((response: PagedResponse<any>) => {
+        const content = response.content || [];
+        if (content.length === 0) return of(null);
 
-          this.cdr.detectChanges();
+        // FIX: Grab the FIRST item (the specific program) from the results array
+        const actualProgram = content[0];
+        const ids = [Number(actualProgram.programID)];
 
-          if (
-            this.viewMode === 'manager' &&
-            !this.programData.isDraft &&
-            this.programData.analytics?.totalApplications > 0
-          ) {
-            setTimeout(() => this.initChart());
-          }
-        },
-      });
+        // 2. Prepare parallel requests
+        const sources: any = {
+          program: of(actualProgram),
+          budget: this.dataService.getBudgetByBudgetId(actualProgram.programID)
+        };
+
+        // Only fetch analytics if manager
+        if (this.viewMode === 'manager') {
+          sources.analytics = this.dataService.getBulkAnalytics(ids);
+        }
+
+        return forkJoin(sources);
+      }),
+      switchMap((results: any) => {
+        if (!results) return of(null);
+
+        const { program, budget, analytics } = results;
+
+        // 3. Map to the specific format the HTML expects
+        const mapped = {
+          program: program, // This is now a single object, not an array
+          isDraft: program.status?.toUpperCase() === 'DRAFT',
+          budget: {
+            spentAmount: budget?.spentAmount || 0,
+            totalAmount: budget?.allocatedAmount || 0,
+            remainingAmount: budget?.remainingAmount || 0,
+          },
+          analytics: (analytics && analytics[program.programID]) || {
+            totalApplications: 0,
+            acceptanceRate: 0,
+            monthlyStats: { labels: [], accepted: [], rejected: [], pending: [] }
+          },
+        };
+
+        return of(mapped);
+      })
+    ).subscribe({
+      next: (mappedData: any) => {
+        this.programData = mappedData;
+        this.isLoading = false;
+        this.cdr.detectChanges();
+
+        // 4. Initialize chart for managers if data exists
+        if (
+          this.viewMode === 'manager' &&
+          !this.programData?.isDraft &&
+          this.programData?.analytics?.totalApplications > 0
+        ) {
+          setTimeout(() => this.initChart());
+        }
+      },
+      error: (err) => {
+        console.error("Error loading program:", err);
+        this.isLoading = false;
+      }
+    });
   }
 
   initChart() {

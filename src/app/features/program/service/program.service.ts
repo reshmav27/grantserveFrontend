@@ -76,6 +76,7 @@ export class ProgramService {
     return this.http.get<PagedResponse<any>>(`${this.apiUrl}/manager/search`, { params });
   }
 
+  // Searches programs for researcher using @GetMapping("/search")
   searchProgramsForResearcher(
     title?: string,
     id?: number,
