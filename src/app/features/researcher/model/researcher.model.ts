@@ -12,8 +12,9 @@ export interface ResearcherProfile {
 
 export interface ResearcherDocument {
   documentID: number;
-  documentType: string;
-  fileName: string;
-  verificationStatus: string; // 'Pending', 'Verified', 'Expired'
-  uploadedDate: string;
+  researcherID: number;
+  docType: string;       // Changed from documentType
+  fileURI: string;       // Changed from fileName or fileURL
+  uploadedDate: string;  // Added to match your JSON
+  verificationStatus: string;
 }

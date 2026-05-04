@@ -1,28 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router'; // Added for navigation
 import { ResearcherService } from '../service/researcher.service';
 import { ResearcherProfile, ResearcherDocument } from '../model/researcher.model';
+import { Sidebar } from '../../../shared/components/sidebar/sidebar';
 
 @Component({
   selector: 'app-researcher-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, Sidebar],
   templateUrl: './researcher-dashboard.component.html',
   styleUrls: ['./researcher-dashboard.component.css']
 })
 export class ResearcherDashboardComponent implements OnInit {
   profile!: ResearcherProfile;
   documents: ResearcherDocument[] = [];
-  applicationCount: number = 0; 
+  applicationCount: number = 0;
   isEditing = false;
   userId = localStorage.getItem('userId');
 
   constructor(
     private researcherService: ResearcherService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
     this.loadData();
@@ -34,24 +36,26 @@ export class ResearcherDashboardComponent implements OnInit {
         next: (data) => {
           this.profile = data;
           this.loadDocs(data.researcherID);
-          // Assuming count comes from a specific endpoint or derived from logic
-          this.loadStats(data.researcherID);
+
+          console.log('Profile loaded:', this.profile);
         },
-        error: (err) => console.error('Error fetching profile:', err)
+        error: (err) => {
+          console.error('Error fetching profile:', err);
+          // Add a redirect or an error message so the user isn't stuck
+          // alert("Researcher profile not found. Please contact support.");
+          // this.router.navigate(['/login']);
+        }
       });
     }
   }
 
   loadDocs(id: number) {
-    this.researcherService.getDocuments(id).subscribe(docs => {
+    this.researcherService.getDocumentsByResearcherId(id).subscribe(docs => {
       this.documents = docs;
-    });
-  }
+      this.applicationCount = docs.length;
 
-  loadStats(id: number) {
-    // Replace this with your actual application microservice call if available
-    this.researcherService.getDocuments(id).subscribe(docs => {
-        this.applicationCount = docs.length; 
+      this.cdr.detectChanges();
+      console.log('Documents:', this.documents);
     });
   }
 

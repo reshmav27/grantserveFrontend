@@ -7,8 +7,8 @@ import { ResearcherProfile, ResearcherDocument } from '../model/researcher.model
 @Injectable({ providedIn: 'root' })
 export class ResearcherService {
   // URLs based on your @RequestMapping annotations
-  private profileUrl = `${environment.BASE_URL}/api/researcher`;
-  private docUrl = `${environment.BASE_URL}/api/documents`;
+  private profileUrl = `${environment.BASE_URL}/researcher-service/api/researcher`;
+  private docUrl = `${environment.BASE_URL}/researcher-service/api/documents`;
 
   constructor(private http: HttpClient) {}
 
@@ -21,7 +21,7 @@ export class ResearcherService {
    * Matches your @GetMapping("/{id}") in ResearcherController
    */
   getProfile(id: string): Observable<ResearcherProfile> {
-    return this.http.get<ResearcherProfile>(`${this.profileUrl}/${id}`, { 
+    return this.http.get<ResearcherProfile>(`${this.profileUrl}/user/${id}`, { 
       headers: this.getHeaders() 
     });
   }
@@ -55,6 +55,18 @@ export class ResearcherService {
     return this.http.post(`${this.docUrl}/upload`, doc, {
       headers: this.getHeaders(),
       responseType: 'text'
+    });
+  }
+
+  /** * 5. Get Document (GET /api/documents/{id})
+   * Matches your @GetMapping("/{id}") in ResearcherDocumentController
+   * Note: This fetches a SINGLE document by ID
+   */
+  getDocumentsByResearcherId(id: number): Observable<ResearcherDocument[]> {
+    // If your backend returns an Optional<ResearcherDocument>, 
+    // wrap it in an array so your *ngFor doesn't crash
+    return this.http.get<ResearcherDocument[]>(`${this.docUrl}/researcher/${id}`, { 
+      headers: this.getHeaders() 
     });
   }
 }
